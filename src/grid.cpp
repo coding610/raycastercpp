@@ -13,13 +13,14 @@ void Grid::draw_lines() {
             _resolution.y,
             WHITE
         );
-        DrawLine(
-            0,
-            i * _resolution.y / (grid.size()),
-            _resolution.x,
-            i * _resolution.y / (grid.size()),
-            WHITE
-        );
+
+        // DrawLine(
+        //     0,
+        //     i * _resolution.y / (grid.size()),
+        //     _resolution.x,
+        //     i * _resolution.y / (grid.size()),
+        //     WHITE
+        // );
     }
 }
 

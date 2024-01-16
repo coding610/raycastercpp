@@ -2,7 +2,9 @@
 #include <chrono>
 #include "player.hpp"
 #include "visualizer.hpp"
+#include "raymanager.hpp"
 #include "grid.hpp"
+#include "utils.hpp"
 
 
 int main() {
@@ -15,19 +17,22 @@ int main() {
 
     Grid* grid = new Grid(resolution);
     Player* player = new Player(grid, resolution);
+    RayManager* rays = new RayManager(player, grid, resolution);
     // Visualizer3D* vizualizer3D = new Visualizer(grid, resolution);
 
     float delta = 0;
     while (!WindowShouldClose()) {
         auto delta1 = std::chrono::steady_clock::now();
+
         player->update(delta);
+        // rays->update();
 
         BeginDrawing();
             ClearBackground(BLACK);
-
             grid->draw_objects();
             grid->draw_lines();
             player->draw();
+            rays->draw();
         EndDrawing();
 
         auto delta2 = std::chrono::steady_clock::now();

@@ -15,11 +15,13 @@ enum Face {
 
 class Player {
 private:
-    // Objects
+    const Vector2 _resolution;
+    Grid* _grid;
+
     Vector2 _position = {600, 300};
     Vector2 _velocity = {0, 0};
-    Vector2 _resolution;
-    Grid* _grid;
+    float _forwards_velocity = 0;
+    float _rotation = 0;
 
     // Constants
     const float _radius = 13;
@@ -32,4 +34,10 @@ public:
     void update(float delta);
     void draw();
     Face inside(Vector2 pos, Vector2 size);
+
+    inline Vector2 get_position() {
+        return _position;
+    } inline float get_rotation() {
+        return _rotation;
+    }
 };
