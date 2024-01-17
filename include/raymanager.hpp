@@ -9,7 +9,7 @@ class _Ray {
 public:
     Vector2 _end_position;
     float _length;
-    const float _MAX_DEPTH = 2;
+    const float _MAX_DEPTH = 5;
 
     void cast(Grid* grid, Vector2 originpos, float rotation, Vector2 cellsize);
 };
@@ -22,8 +22,8 @@ private:
     std::vector<_Ray*> _rays;
     const Vector2 _resolution;
 
-    const int _number_of_rays = 100;
-    const float _fov = 1; // In radians
+    const int _number_of_rays = 500;
+    const float _fov = 1.1; // In radians
     Vector2 _cellsize;
 
 public:
