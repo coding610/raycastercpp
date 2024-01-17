@@ -19,24 +19,36 @@ void _Ray::cast(Grid* grid, Vector2 originpos, float rotation, Vector2 cellsize)
 
     ////// VERTICAL //////
     for (int i = 0; i < _MAX_DEPTH; i++) {
-        if (utils::collide(grid, vertical_pos, cellsize))
+        if (utils::collide(grid, vertical_pos, cellsize, 0))
             break;
         vertical_pos.x += vertical_step.x; vertical_pos.y += vertical_step.y;
     }
 
     ////// HORIZONTAL //////
     for (int i = 0; i < _MAX_DEPTH; i++) {
-        if (utils::collide(grid, horizontal_pos, cellsize))
+        if (utils::collide(grid, horizontal_pos, cellsize, 1))
             break;
         horizontal_pos.x += horizontal_step.x; horizontal_pos.y += horizontal_step.y;
     }
+
+    ////// EDGE CASES //////
+        if (vertical_pos.y < 0 ||
+            vertical_pos.y > grid->get_resolution().y
+        ) {
+            _end_position = horizontal_pos;
+            return;
+        } if (horizontal_pos.x < 0 ||
+              horizontal_pos.x > grid->get_resolution().x) {
+            _end_position = vertical_pos;
+            return;
+        }
+
 
     if (utils::distance(originpos, vertical_pos) >= utils::distance(originpos, horizontal_pos)) {
         _end_position = horizontal_pos;
     } else {
         _end_position = vertical_pos;
     }
-    _end_position = vertical_pos;
 }
 
 void RayManager::update() {

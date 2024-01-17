@@ -18,7 +18,7 @@ private:
     const Vector2 _resolution;
     Grid* _grid;
 
-    Vector2 _position = {600, 300};
+    Vector2 _position = {500, 300};
     Vector2 _velocity = {0, 0};
     float _forwards_velocity = 0;
     float _rotation = PI/2; // Must be this

@@ -32,10 +32,10 @@ void Player::update(float delta) {
     _position.x += std::sin(_rotation - PI) * _forwards_velocity * _speed * delta * -1; // -1 for adjustments purpuses
     _position.y += std::cos(_rotation - PI) * _forwards_velocity * _speed * delta * -1; // -1 for adjustments purpuses
     
-    for (int i = 0; i < _grid->grid.size(); i++) {
+    for (int i = 0; i < _grid->grid.size(); i++) { // FIXME
         for (int j = 0; j < _grid->grid[i].size(); j++) {
-            if (_grid->grid[i][j] == 0)
-                continue;
+            if (_grid->grid[i][j] == 0) continue;
+
             Face face = inside(
                 {j * _resolution.x / (_grid->grid.size()),
                 i * _resolution.y / (_grid->grid.size())},
@@ -44,9 +44,9 @@ void Player::update(float delta) {
             );
 
             if (face == Face::UP || face == Face::DOWN) {
-                _position.y -= _velocity.y * _speed * delta;
+                _position.y -= std::cos(_rotation - PI) * _forwards_velocity * _speed * delta * -1;
             } else if (face == Face::LEFT || face == Face::RIGHT) {
-                _position.x -= _velocity.x * _speed * delta;
+                _position.x -= std::sin(_rotation - PI) * _forwards_velocity * _speed * delta * -1;
             }
         }
     }

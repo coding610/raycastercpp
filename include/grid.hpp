@@ -14,14 +14,17 @@ public:
         {0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 4, 0},
         {0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 4, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0}
     };
 
     inline Grid(Vector2 res) : _resolution(res) {};
     void draw_lines();
     void draw_objects();
+    inline Vector2 get_resolution() {
+        return _resolution;
+    }
 };

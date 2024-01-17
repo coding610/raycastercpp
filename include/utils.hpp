@@ -31,8 +31,8 @@ inline int square(int num) {
 
 inline float distance(Vector2 p1, Vector2 p2) {
     return std::sqrt(
-        square(std::abs(p1.x - p2.x)) +
-        square(std::abs(p1.y - p2.y))
+        square(p1.x - p2.x) +
+        square(p1.y - p2.y)
     );
 }
 
@@ -99,13 +99,12 @@ inline Vector2 step(Vector2& pos, bool aligment, float rotation, Vector2 cellsiz
     float relative_step = utils::get_step(pos, aligment, rotation, cellsize, true);
     float fixed_step = utils::get_step(pos, aligment, rotation, cellsize, false);
 
-
     if (aligment == 0) {
         pos.x += relative_step;
-        pos.y += relative_step / std::tan(rotation);
+        pos.y += relative_step * std::tan(PI / 2 - rotation);
         return {
             fixed_step,
-            fixed_step / std::tan(rotation)
+            fixed_step * std::tan(PI / 2 - rotation)
         };
     } else {
         pos.x += relative_step * std::tan(rotation);
@@ -122,13 +121,18 @@ inline void adjust_radians(float& rad) {
     else if (rad >= 2 * PI) rad = rad - 2 * PI;
 }
 
-inline bool collide(Grid* grid, Vector2 pos, Vector2 cellsize) {
+inline bool collide(Grid* grid, Vector2 pos, Vector2 cellsize, bool aligment) {
     Vector2 cell = utils::cell(pos, cellsize, true);
+
     if (cell.x > 0 && cell.y > 0 &&
         cell.x < grid->grid.size() && cell.y < grid->grid[0].size()
     ) {
-        if (grid->grid[cell.x][cell.y]) {
+        if (grid->grid[cell.x][cell.y] != 0) {
             return true;
+        } else if (cell.y - 1 > 0 && aligment == 0) {
+            if (grid->grid[cell.x][cell.y - 1] != 0) return true;
+        } else if (cell.x - 1 > 0 && aligment == 1) {
+            if (grid->grid[cell.x - 1][cell.y] != 0) return true;
         }
     }
 
