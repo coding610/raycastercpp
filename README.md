@@ -7,3 +7,4 @@ I think the C version of the libary provides a simplicity that I enjoy, and the 
 0. Instal raylib on your system
 1. clone
 2. make
+3. ./bin/main
