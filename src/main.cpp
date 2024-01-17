@@ -33,6 +33,7 @@ int main() {
             grid->draw_lines();
             player->draw();
             rays->draw();
+            DrawFPS(10, 10);
         EndDrawing();
 
         auto delta2 = std::chrono::steady_clock::now();

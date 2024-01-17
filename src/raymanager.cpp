@@ -31,9 +31,12 @@ void _Ray::cast(Grid* grid, Vector2 originpos, float rotation, Vector2 cellsize)
         horizontal_pos.x += horizontal_step.x; horizontal_pos.y += horizontal_step.y;
     }
 
-    // DrawLineV(originpos, vertical_pos, BLUE);
-    DrawLineV(originpos, horizontal_pos, RED);
-    _end_position = originpos;
+    if (utils::distance(originpos, vertical_pos) >= utils::distance(originpos, horizontal_pos)) {
+        _end_position = horizontal_pos;
+    } else {
+        _end_position = vertical_pos;
+    }
+    _end_position = vertical_pos;
 }
 
 void RayManager::update() {
@@ -52,6 +55,7 @@ void RayManager::draw() {
     }
 
     update();
+    std::exit(0);
 }
 
 RayManager::RayManager(Player* pl, Grid* grd, Vector2 res) : _player(pl), _grid(grd), _resolution(res) {

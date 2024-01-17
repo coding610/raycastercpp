@@ -6,21 +6,21 @@
 void Grid::draw_lines() {
     // Assuming that grid has the same width and height
     for (int i = 0; i <= grid.size(); i++) {
-        DrawLine(
-            i * _resolution.x / (grid.size()),
-            0,
-            i * _resolution.x / (grid.size()),
-            _resolution.y,
-            WHITE
-        );
-
         // DrawLine(
+        //     i * _resolution.x / (grid.size()),
         //     0,
-        //     i * _resolution.y / (grid.size()),
-        //     _resolution.x,
-        //     i * _resolution.y / (grid.size()),
+        //     i * _resolution.x / (grid.size()),
+        //     _resolution.y,
         //     WHITE
         // );
+
+        DrawLine(
+            0,
+            i * _resolution.y / (grid.size()),
+            _resolution.x,
+            i * _resolution.y / (grid.size()),
+            WHITE
+        );
     }
 }
 

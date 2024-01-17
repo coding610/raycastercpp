@@ -75,11 +75,14 @@ inline float get_step(Vector2 pos, bool aligment, float rotation, Vector2 cellsi
             if (rotation < PI) {
                 return cellsize.x - std::abs(pos.x - utils::cellpos(pos, cellsize, 0).x);
             } else {
-                return -std::abs(pos.x - utils::cellpos(pos, cellsize).x);
+                return -std::abs(pos.x - utils::cellpos(pos, cellsize, 0).x);
             }
-        } else { // FIXME
-            if (rotation > PI / 2 && rotation < 1.5 * PI) return -cellsize.y;
-            else return cellsize.y;
+        } else {
+            if (rotation > PI / 2 && rotation < 1.5 * PI) {
+                return -std::abs(pos.y - utils::cellpos(pos, cellsize, 1).y);
+            } else {
+                return cellsize.y - std::abs(pos.y - utils::cellpos(pos, cellsize, 1).y);
+            }
         }
     } else {
         if (aligment == 0) {
@@ -95,6 +98,19 @@ inline float get_step(Vector2 pos, bool aligment, float rotation, Vector2 cellsi
 inline Vector2 step(Vector2& pos, bool aligment, float rotation, Vector2 cellsize) {
     float relative_step = utils::get_step(pos, aligment, rotation, cellsize, true);
     float fixed_step = utils::get_step(pos, aligment, rotation, cellsize, false);
+
+    // Edge cases
+    DEB(rotation);
+    if (aligment == 0 && rotation == 0) {
+        DBN("edgecase: ");
+        DEB(rotation);
+        pos.x += relative_step;
+        pos.y += relative_step;
+        return {
+            fixed_step,
+            fixed_step
+        };
+    }
 
     if (aligment == 0) {
         pos.x += relative_step;

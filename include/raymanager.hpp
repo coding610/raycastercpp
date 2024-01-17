@@ -22,8 +22,8 @@ private:
     std::vector<_Ray*> _rays;
     const Vector2 _resolution;
 
-    const int _number_of_rays = 1;
-    const float _fov = 0.01; // In radians
+    const int _number_of_rays = 100;
+    const float _fov = 1; // In radians
     Vector2 _cellsize;
 
 public:
