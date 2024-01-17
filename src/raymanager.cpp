@@ -55,7 +55,6 @@ void RayManager::draw() {
     }
 
     update();
-    std::exit(0);
 }
 
 RayManager::RayManager(Player* pl, Grid* grd, Vector2 res) : _player(pl), _grid(grd), _resolution(res) {

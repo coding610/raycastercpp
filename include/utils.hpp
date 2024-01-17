@@ -99,18 +99,6 @@ inline Vector2 step(Vector2& pos, bool aligment, float rotation, Vector2 cellsiz
     float relative_step = utils::get_step(pos, aligment, rotation, cellsize, true);
     float fixed_step = utils::get_step(pos, aligment, rotation, cellsize, false);
 
-    // Edge cases
-    DEB(rotation);
-    if (aligment == 0 && rotation == 0) {
-        DBN("edgecase: ");
-        DEB(rotation);
-        pos.x += relative_step;
-        pos.y += relative_step;
-        return {
-            fixed_step,
-            fixed_step
-        };
-    }
 
     if (aligment == 0) {
         pos.x += relative_step;
@@ -130,8 +118,8 @@ inline Vector2 step(Vector2& pos, bool aligment, float rotation, Vector2 cellsiz
 }
 
 inline void adjust_radians(float& rad) {
-    if (rad < 0) rad = 2 * PI + rad;
-    else if (rad > 2 * PI) rad = rad - 2 * PI;
+    if (rad <= 0) rad = 2 * PI + rad;
+    else if (rad >= 2 * PI) rad = rad - 2 * PI;
 }
 
 inline bool collide(Grid* grid, Vector2 pos, Vector2 cellsize) {
