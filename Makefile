@@ -12,7 +12,8 @@ INC_DIR=include
 OBJ_PATH=build
 CPP_VERSION=20
 
-CFLAGS := -O3 -Wall -g -I$(INC_DIR) -std=c++$(CPP_VERSION) -Wno-logical-op-parentheses -Wno-bitwise-op-parentheses
+# Add -O3 for preformance
+CFLAGS := -Wall -g -I$(INC_DIR) -std=c++$(CPP_VERSION) -Wno-logical-op-parentheses -Wno-bitwise-op-parentheses
 LDFLAGS := -lraylib
 
 #_____________________COMPILE______________________
