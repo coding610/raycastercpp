@@ -36,6 +36,7 @@ void _Ray::cast(Grid* grid, Vector2 originpos, float rotation, Vector2 cellsize)
     } else {
         _end_position = vertical_pos;
     }
+    _end_position = vertical_pos;
 }
 
 void RayManager::update() {
