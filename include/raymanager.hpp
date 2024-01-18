@@ -10,7 +10,7 @@ public:
     Vector2 _end_position;
     Color _end_color = DARKGRAY;
     float _length;
-    const float _MAX_DEPTH = 3;
+    const float _MAX_DEPTH = 2;
 
     void cast(Grid* grid, Vector2 originpos, float rotation, Vector2 cellsize);
 };

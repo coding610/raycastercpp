@@ -1,5 +1,7 @@
 #include <raylib.h>
 #include <iostream>
+#include <fstream>
+#include <string>
 #include "grid.hpp"
 #include "utils.hpp"
 
@@ -12,7 +14,7 @@ void Grid::draw_lines() {
             0,
             i * _resolution.x / (grid.size()),
             _resolution.y,
-            Color(200, 200, 255, 125)
+            Color(200, 200, 255, 30)
         );
 
         DrawLine(
@@ -20,9 +22,31 @@ void Grid::draw_lines() {
             i * _resolution.y / (grid.size()),
             _resolution.x,
             i * _resolution.y / (grid.size()),
-            Color(200, 200, 255, 125)
+            Color(200, 200, 255, 30)
         );
     }
+}
+
+void Grid::read_file(const char* path) {
+    std::fstream f(path, std::ios::in);
+    if (!f) {
+        std::cerr << "Error: file \"" << path << "\" not found in function Grid::read_file(const char* path)\n";
+        std::exit(1);
+    }
+
+    grid = {};
+    std::string slice;
+    while (std::getline(f, slice)) {
+        std::vector<int> gslice;
+        for (int j = 0; j < slice.length(); j++) {
+            if (slice[j] == ' ') continue;
+            int num = slice[j] - 48;
+            gslice.push_back(num);
+        }
+        grid.push_back(gslice);
+    }
+
+    f.close();
 }
 
 void Grid::draw_objects() {

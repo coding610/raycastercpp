@@ -174,7 +174,9 @@ inline bool collide(Grid* grid, Vector2 pos, Vector2 cellsize, bool aligment, bo
                 return true;
             }
         }
-    }
+    } // else {
+     //   return true;
+    // }
 
     return false;
 }

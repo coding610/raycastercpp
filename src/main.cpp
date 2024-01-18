@@ -15,7 +15,7 @@ int main() {
     InitWindow(resolution.x, resolution.y, "Raycaster");
     SetTargetFPS(60);
 
-    Grid* grid = new Grid(resolution);
+    Grid* grid = new Grid(resolution); grid->read_file("mapper/output.txt");
     Player* player = new Player(grid, resolution);
     RayManager* rays = new RayManager(player, grid, resolution);
     Visualizer* visualizer = new Visualizer(grid, rays);

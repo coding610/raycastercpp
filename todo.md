@@ -1,2 +1,2 @@
 # TODO
-    * Create window boundaries for rays
+    * Create a seperator program that allows you to draw maps with a mouse

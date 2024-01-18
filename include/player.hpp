@@ -18,13 +18,13 @@ private:
     const Vector2 _resolution;
     Grid* _grid;
 
-    Vector2 _position = {50, 50};
+    Vector2 _position = {0, 0};
     Vector2 _velocity = {0, 0};
     float _forwards_velocity = 0;
-    float _rotation = PI/2; // Must be this
+    float _rotation = PI/2; // TODO: test going 0rad
 
     // Constants
-    const float _radius = 13;
+    const float _radius = 1;
     const float _speed = 100;
     const Color _color = WHITE;
     const Color _outline_color = BLACK;

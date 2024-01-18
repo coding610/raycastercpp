@@ -13,8 +13,8 @@ void Player::update(float delta) {
 
     ////// MOVEMENT //////
     _forwards_velocity = 0;
-    float rot_acc = 7;
-    float forw_acc = 1.0;
+    float rot_acc = 3;
+    float forw_acc = 0.5;
 
     if (IsKeyDown(KEY_LEFT_CONTROL)) rot_acc = 1;
     if (IsKeyDown(KEY_LEFT_SHIFT)) forw_acc = 6;
@@ -49,6 +49,12 @@ void Player::update(float delta) {
                 _position.x -= std::sin(_rotation - PI) * _forwards_velocity * _speed * delta * -1;
             }
         }
+    }
+
+    if (_position.x < 0 || _position.x > _resolution.x) {
+        _position.x -= std::sin(_rotation - PI) * _forwards_velocity * _speed * delta * -1;
+    } if (_position.y < 0 || _position.y > _resolution.y) {
+        _position.y -= std::cos(_rotation - PI) * _forwards_velocity * _speed * delta * -1;
     }
 }
 
