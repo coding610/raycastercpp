@@ -8,6 +8,7 @@
 class _Ray {
 public:
     Vector2 _end_position;
+    Color _end_color = DARKGRAY;
     float _length;
     const float _MAX_DEPTH = 5;
 

@@ -36,7 +36,7 @@ inline float distance(Vector2 p1, Vector2 p2) {
     );
 }
 
-inline Vector2 cell(Vector2 pos, Vector2 cellsize, bool transform = false) {
+inline Vector2 cell(Vector2 pos, Vector2 cellsize, bool transform) {
     if (transform) {
         return {
             std::floor(pos.y / cellsize.y),
@@ -48,6 +48,12 @@ inline Vector2 cell(Vector2 pos, Vector2 cellsize, bool transform = false) {
             std::floor(pos.y / cellsize.y)
         };
     }
+}
+
+inline void plus_cell(Vector2& cell, Vector2 pos, Vector2 cellsize, bool transform) {
+    Vector2 cellt = utils::cell(pos, cellsize, transform);
+    cell.x += cellt.x;
+    cell.y += cellt.y;
 }
 
 inline Vector2 cellpos(Vector2 pos, Vector2 cellsize, int xy = -1) {
@@ -68,6 +74,21 @@ inline Vector2 cellpos(Vector2 pos, Vector2 cellsize, int xy = -1) {
         };
     }
 }
+
+inline bool inside_field(Grid* grid, Vector2 cell) {
+    if (cell.x >= 0 && cell.y >= 0 &&
+        cell.x < grid->grid.size() && cell.y < grid->grid[0].size()
+    ) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+inline bool is_black(Color clr) {
+    return clr.r == 0 && clr.g == 0 && clr.b == 0;
+}
+
 
 inline float get_step(Vector2 pos, bool aligment, float rotation, Vector2 cellsize, bool relative) {
     if (relative) {
@@ -121,8 +142,14 @@ inline void adjust_radians(float& rad) {
     else if (rad >= 2 * PI) rad = rad - 2 * PI;
 }
 
-inline bool collide(Grid* grid, Vector2 pos, Vector2 cellsize, bool aligment) {
+inline bool collide(Grid* grid, Vector2 pos, Vector2 cellsize, bool aligment, bool& adjusted_face) {
     Vector2 cell = utils::cell(pos, cellsize, true);
+
+    if (cell.x > 0 && cell.y > 0 &&
+        cell.x > grid->grid.size() && cell.y > grid->grid[0].size()
+    ) {
+        return true;
+    }
 
     if (cell.x > 0 && cell.y > 0 &&
         cell.x < grid->grid.size() && cell.y < grid->grid[0].size()
@@ -130,9 +157,15 @@ inline bool collide(Grid* grid, Vector2 pos, Vector2 cellsize, bool aligment) {
         if (grid->grid[cell.x][cell.y] != 0) {
             return true;
         } else if (cell.y - 1 > 0 && aligment == 0) {
-            if (grid->grid[cell.x][cell.y - 1] != 0) return true;
+            if (grid->grid[cell.x][cell.y - 1] != 0) {
+                adjusted_face = true;
+                return true;
+            }
         } else if (cell.x - 1 > 0 && aligment == 1) {
-            if (grid->grid[cell.x - 1][cell.y] != 0) return true;
+            if (grid->grid[cell.x - 1][cell.y] != 0) {
+                adjusted_face = true;
+                return true;
+            }
         }
     }
 

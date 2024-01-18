@@ -17,7 +17,7 @@ void Player::update(float delta) {
     float forw_acc = 1.0;
 
     if (IsKeyDown(KEY_LEFT_CONTROL)) rot_acc = 1;
-    if (IsKeyDown(KEY_LEFT_SHIFT)) forw_acc = 2;
+    if (IsKeyDown(KEY_LEFT_SHIFT)) forw_acc = 6;
 
     if (IsKeyDown(KEY_LEFT)) {
         _rotation += rot_acc * delta;
@@ -32,7 +32,7 @@ void Player::update(float delta) {
     _position.x += std::sin(_rotation - PI) * _forwards_velocity * _speed * delta * -1; // -1 for adjustments purpuses
     _position.y += std::cos(_rotation - PI) * _forwards_velocity * _speed * delta * -1; // -1 for adjustments purpuses
     
-    for (int i = 0; i < _grid->grid.size(); i++) { // FIXME
+    for (int i = 0; i < _grid->grid.size(); i++) {
         for (int j = 0; j < _grid->grid[i].size(); j++) {
             if (_grid->grid[i][j] == 0) continue;
 
