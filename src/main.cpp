@@ -18,7 +18,7 @@ int main() {
     Grid* grid = new Grid(resolution);
     Player* player = new Player(grid, resolution);
     RayManager* rays = new RayManager(player, grid, resolution);
-    Visualizer* visualizer = new Visualizer(rays);
+    Visualizer* visualizer = new Visualizer(grid, rays);
 
     float delta = 0;
     bool gamemode = 0; // 0 for 2d, 1 for 3d
@@ -33,7 +33,7 @@ int main() {
         rays->update();
 
         BeginDrawing();
-            ClearBackground(BLACK);
+            ClearBackground(Color(7, 7, 10));
 
             if (gamemode == 0) {
                 grid->draw_objects();
@@ -54,5 +54,5 @@ int main() {
 
     delete grid;
     delete player;
-    // delete visualizer3D;
+    delete visualizer;
 }

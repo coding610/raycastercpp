@@ -5,9 +5,11 @@
 
 class Visualizer {
 private:
-    RayManager* _rays;
+    RayManager* _raymanager;
+    std::vector<_Ray*> _rays;
+    Grid* _grid;
 
 public:
-    Visualizer(RayManager* r) : _rays(r) {};
-    void draw();
+    Visualizer(Grid* grid, RayManager* r);
+    void draw() const;
 };

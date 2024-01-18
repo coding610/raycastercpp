@@ -30,9 +30,16 @@ inline int square(int num) {
 }
 
 inline float distance(Vector2 p1, Vector2 p2) {
+    if (p1.y > 10000 || p1.y < -10000 || p1.x > 10000 || p1.y < -10000
+        || p2.y > 10000 || p2.y < -10000 || p2.x > 10000 || p2.y < -10000
+    ) {
+        return 100000;
+    }
+
+
     return std::sqrt(
-        square(p1.x - p2.x) +
-        square(p1.y - p2.y)
+        square(std::floor(p1.x - p2.x)) +
+        square(std::floor(p1.y - p2.y))
     );
 }
 
