@@ -1,6 +1,7 @@
 #include <raylib.h>
 #include <iostream>
 #include "grid.hpp"
+#include "utils.hpp"
 
 
 void Grid::draw_lines() {
@@ -27,6 +28,7 @@ void Grid::draw_lines() {
 void Grid::draw_objects() {
     for (int i = 0; i < grid.size(); i++) {
         for (int j = 0; j < grid[i].size(); j++) {
+            if (grid[i][j] == 0) continue;
             DrawRectangle(
                 j * _resolution.x / (grid.size()),
                 i * _resolution.y / (grid.size()),

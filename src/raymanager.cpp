@@ -13,7 +13,7 @@ void _Ray::cast(Grid* grid, Vector2 originpos, float rotation, Vector2 cellsize)
     Vector2 horizontal_pos = { utils::cellpos(originpos, cellsize, 1).x, originpos.y };
     Vector2 vertical_step = utils::step(vertical_pos, 0, rotation, cellsize);
     Vector2 horizontal_step = utils::step(horizontal_pos, 1, rotation, cellsize);
-
+    
     ////// RAYCAST //////
     int depth = 0;
     bool adjusted_face = false;
@@ -56,6 +56,9 @@ void _Ray::cast(Grid* grid, Vector2 originpos, float rotation, Vector2 cellsize)
             _end_color = grid->get_colors()[grid->grid[(int) cell.x - 1][(int) cell.y]];
         }
     }
+
+    ////// LENGTH //////
+    _length = utils::distance(originpos, _end_position);
 }
 
 void RayManager::update() {

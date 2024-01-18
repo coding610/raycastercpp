@@ -18,21 +18,31 @@ int main() {
     Grid* grid = new Grid(resolution);
     Player* player = new Player(grid, resolution);
     RayManager* rays = new RayManager(player, grid, resolution);
-    // Visualizer3D* vizualizer3D = new Visualizer(grid, resolution);
+    Visualizer* visualizer = new Visualizer(rays);
 
     float delta = 0;
+    bool gamemode = 0; // 0 for 2d, 1 for 3d
     while (!WindowShouldClose()) {
         auto delta1 = std::chrono::steady_clock::now();
+
+        if (IsKeyPressed(KEY_ENTER)) {
+            gamemode = !gamemode;
+        }
+
         player->update(delta);
         rays->update();
 
         BeginDrawing();
             ClearBackground(BLACK);
 
-            grid->draw_objects();
-            grid->draw_lines();
-            player->draw();
-            rays->draw();
+            if (gamemode == 0) {
+                grid->draw_objects();
+                grid->draw_lines();
+                player->draw();
+                rays->draw();
+            } else {
+                visualizer->draw();
+            }
 
             DrawFPS(10, 10);
         EndDrawing();
@@ -43,6 +53,6 @@ int main() {
 
 
     delete grid;
-    // delete visualizer3D;
     delete player;
+    // delete visualizer3D;
 }
