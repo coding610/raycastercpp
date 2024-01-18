@@ -7,43 +7,31 @@
 
 
 void _Ray::cast(Grid* grid, Vector2 originpos, float rotation, Vector2 cellsize) {
-    Vector2 vertical_pos = {
-        originpos.x,
-        utils::cellpos(originpos, cellsize, 0).y
-    }; Vector2 horizontal_pos = {
-        utils::cellpos(originpos, cellsize, 1).x,
-        originpos.y
-    };
+    ////// PREREQUISITS //////
+    Vector2 vertical_pos = { originpos.x, utils::cellpos(originpos, cellsize, 0).y };
+    Vector2 horizontal_pos = { utils::cellpos(originpos, cellsize, 1).x, originpos.y };
     Vector2 vertical_step = utils::step(vertical_pos, 0, rotation, cellsize);
     Vector2 horizontal_step = utils::step(horizontal_pos, 1, rotation, cellsize);
 
-    ////// VERTICAL //////
-    for (int i = 0; i < _MAX_DEPTH; i++) {
-        if (utils::collide(grid, vertical_pos, cellsize, 0))
-            break;
-        vertical_pos.x += vertical_step.x; vertical_pos.y += vertical_step.y;
-    }
+    ////// RAYCAST //////
+    int depth = 0;
+    bool collide_vertical = false; bool collide_horizontal = false;
+    while ((!collide_vertical || !collide_horizontal) && depth < _MAX_DEPTH) { depth++;
+        if (utils::collide(grid, vertical_pos, cellsize, 0)) collide_vertical = true;
+        if (utils::collide(grid, horizontal_pos, cellsize, 1)) collide_horizontal = true;
 
-    ////// HORIZONTAL //////
-    for (int i = 0; i < _MAX_DEPTH; i++) {
-        if (utils::collide(grid, horizontal_pos, cellsize, 1))
-            break;
-        horizontal_pos.x += horizontal_step.x; horizontal_pos.y += horizontal_step.y;
+        if (!collide_vertical) { vertical_pos.x += vertical_step.x; vertical_pos.y += vertical_step.y; }
+        if (!collide_horizontal) { horizontal_pos.x += horizontal_step.x; horizontal_pos.y += horizontal_step.y; }
     }
 
     ////// EDGE CASES //////
-        if (vertical_pos.y < 0 ||
-            vertical_pos.y > grid->get_resolution().y
-        ) {
-            _end_position = horizontal_pos;
-            return;
-        } if (horizontal_pos.x < 0 ||
-              horizontal_pos.x > grid->get_resolution().x) {
-            _end_position = vertical_pos;
-            return;
-        }
+    if (vertical_pos.y < 0 || vertical_pos.y > grid->get_resolution().y) {
+        _end_position = horizontal_pos; return;
+    } else if (horizontal_pos.x < 0 || horizontal_pos.x > grid->get_resolution().x) {
+        _end_position = vertical_pos; return;
+    }
 
-
+    ////// CHOOSE DIRECTION //////
     if (utils::distance(originpos, vertical_pos) >= utils::distance(originpos, horizontal_pos)) {
         _end_position = horizontal_pos;
     } else {
@@ -65,17 +53,13 @@ void RayManager::draw() {
     for (auto& ray : _rays) {
         DrawLineV(_player->get_position(), ray->_end_position, WHITE);
     }
-
-    update();
 }
 
-RayManager::RayManager(Player* pl, Grid* grd, Vector2 res) : _player(pl), _grid(grd), _resolution(res) {
+RayManager::RayManager(Player* pl, Grid* grd, Vector2 res)
+           : _player(pl), _grid(grd), _resolution(res),
+           _cellsize({ res.x / grd->grid.size(), res.y / grd->grid[0].size() })
+{
     for (int i = 0; i < _number_of_rays; i++) {
         _rays.push_back(new _Ray);
     }
-
-    _cellsize = {
-        _resolution.x / _grid->grid.size(),
-        _resolution.y / _grid->grid[0].size()
-    };
 }

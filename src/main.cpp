@@ -23,16 +23,17 @@ int main() {
     float delta = 0;
     while (!WindowShouldClose()) {
         auto delta1 = std::chrono::steady_clock::now();
-
         player->update(delta);
-        // rays->update();
+        rays->update();
 
         BeginDrawing();
             ClearBackground(BLACK);
+
             grid->draw_objects();
             grid->draw_lines();
             player->draw();
             rays->draw();
+
             DrawFPS(10, 10);
         EndDrawing();
 

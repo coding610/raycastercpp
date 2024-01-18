@@ -4,7 +4,7 @@ I think the C version of the libary provides a simplicity that I enjoy, and the 
 
 ## Usage
 (Dont know if this will build on linux)
-0. Instal raylib on your system
-1. clone
-2. make
-3. ./bin/main
+1. Instal raylib on your system
+2. clone
+3. make
+4. ./bin/main

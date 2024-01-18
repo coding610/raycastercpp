@@ -13,16 +13,16 @@ void Player::update(float delta) {
 
     ////// MOVEMENT //////
     _forwards_velocity = 0;
-    float rot_acc = 0.1;
+    float rot_acc = 7;
     float forw_acc = 1.0;
 
-    if (IsKeyDown(KEY_LEFT_CONTROL)) rot_acc = 0.01;
+    if (IsKeyDown(KEY_LEFT_CONTROL)) rot_acc = 1;
     if (IsKeyDown(KEY_LEFT_SHIFT)) forw_acc = 2;
 
     if (IsKeyDown(KEY_LEFT)) {
-        _rotation += rot_acc; // In radians
+        _rotation += rot_acc * delta;
     } if (IsKeyDown(KEY_RIGHT)) {
-        _rotation -= rot_acc; // In radians
+        _rotation -= rot_acc * delta;
     } if (IsKeyDown(KEY_UP)) {
         _forwards_velocity += forw_acc;
     } if (IsKeyDown(KEY_DOWN)) {

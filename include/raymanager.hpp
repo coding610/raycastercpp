@@ -22,9 +22,9 @@ private:
     std::vector<_Ray*> _rays;
     const Vector2 _resolution;
 
-    const int _number_of_rays = 500;
-    const float _fov = 1.1; // In radians
-    Vector2 _cellsize;
+    const int _number_of_rays = 100;
+    const float _fov = PI / 2;
+    const Vector2 _cellsize;
 
 public:
     RayManager(Player* pl, Grid* grd, Vector2 res);
