@@ -16,9 +16,9 @@ void Visualizer::draw() const {
 
         DrawLine(
             GetRenderWidth() - (i+1) * (GetRenderWidth() / _rays.size()),
-            _player->get_height() - wall_height / 2,
+            _player->get_rotationx() - wall_height / 2,
             GetRenderWidth() - (i+1) * (GetRenderWidth() / _rays.size()),
-            _player->get_height() + wall_height / 2 + wall_height,
+            _player->get_rotationx() + wall_height / 2 + wall_height,
             Color(
                 ray->_end_color.r,
                 ray->_end_color.g,

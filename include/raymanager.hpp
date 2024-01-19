@@ -12,8 +12,10 @@ public:
     float _length;
     float _height;
     const float _MAX_DEPTH = 10;
+    float _MAX_RAY_LENGTH;
 
-    void cast(Grid* grid, Vector2 originpos, float rotation, float fov, Vector2 cellsize, const float MAX_RAY_LENGTH);
+    _Ray(float MRL) : _MAX_RAY_LENGTH(MRL) {}
+    void cast(Grid* grid, Vector2 originpos, float rotation, float originangle, Vector2 cellsize, const float MAX_RAY_LENGTH);
     void draw();
 };
 

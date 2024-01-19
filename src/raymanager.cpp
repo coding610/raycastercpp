@@ -6,7 +6,7 @@
 #include "utils.hpp"
 
 
-void _Ray::cast(Grid* grid, Vector2 originpos, float rotation, float fov, Vector2 cellsize, const float MAX_RAY_LENGTH) {
+void _Ray::cast(Grid* grid, Vector2 originpos, float rotation, float originangle, Vector2 cellsize, const float MAX_RAY_LENGTH) { // TODO: Change rotation to angle
     ////// PREREQUISITS //////
     _end_color = BLACK;
     Vector2 vertical_pos = { originpos.x, utils::cellpos(originpos, cellsize, 0).y };
@@ -50,8 +50,9 @@ void _Ray::cast(Grid* grid, Vector2 originpos, float rotation, float fov, Vector
         _height = grid->grid[(int) cell.x][(int) cell.y].HEIGHT;
     }
 
-    ////// FISH-EYE ADJUSTED LENGTH //////
-    _length = utils::distance(originpos, _end_position);
+    ////// FISH-EYE ADJUSTMENTS //////
+    float delta_radians = originangle - rotation; utils::adjust_radians(delta_radians);
+    _length = utils::distance(originpos, _end_position) * std::cos(delta_radians);
 }
 
 void RayManager::update() {
@@ -59,7 +60,7 @@ void RayManager::update() {
         float rot = _player->get_rotation() + i * (_fov / _rays.size()) - (_fov / 2);
         utils::adjust_radians(rot);
 
-        _rays[i]->cast(_grid, _player->get_position(), rot, _fov, _cellsize, _MAX_RAY_LENGTH);
+        _rays[i]->cast(_grid, _player->get_position(), rot, _player->get_rotation(), _cellsize, _MAX_RAY_LENGTH);
     }
 }
 
@@ -73,9 +74,8 @@ RayManager::RayManager(Player* pl, Grid* grd, Vector2 res)
            : _player(pl), _grid(grd), _resolution(res),
            _cellsize({ res.x / grd->grid.size(), res.y / grd->grid[0].size() })
 {
-    for (int i = 0; i < _ray_resolution; i++) {
-        _rays.push_back(new _Ray);
-    }
-
     _MAX_RAY_LENGTH = _rays[0]->_MAX_DEPTH * ((float) GetRenderWidth() / (float) _grid->grid.size());
+    for (int i = 0; i < _ray_resolution; i++) {
+        _rays.push_back(new _Ray(_MAX_RAY_LENGTH));
+    }
 }

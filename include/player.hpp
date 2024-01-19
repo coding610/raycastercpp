@@ -20,14 +20,16 @@ private:
 
     Vector2 _position = {150, 150};
     Vector2 _velocity = {0, 0};
-    float _rotation = PI;
-    float _height = GetRenderHeight() / 2.0;
+    Vector2 _rotation = {(float) (GetRenderHeight() / 2.0), PI};
 
     // Constants
     float _radius;
     float _speed;
     const Color _color = WHITE;
     const Color _outline_color = BLACK;
+
+    const Vector2 _ROTATION_ACC = {1000, 2}; // rotates around the x and y plane
+    const Vector2 _MOVEMENT_ACC = {3, 3};
 
 public:
     inline Player(Grid* grid, Vector2 res) : _grid(grid), _resolution(res) {
@@ -42,8 +44,8 @@ public:
     inline Vector2 get_position() {
         return _position;
     } inline float get_rotation() {
-        return _rotation;
-    } inline float get_height() {
-        return _height;
+        return _rotation.y;
+    } inline float get_rotationx() {
+        return _rotation.x;
     }
 };
