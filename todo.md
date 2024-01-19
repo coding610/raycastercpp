@@ -1,10 +1,8 @@
-# TODO
+# TODOto
     * Seperator
-        * Border button
-        * Height
         * Zoom
         * Pan
-        * Undo
+        * Multiselect
     * Visualizer
         * Sky and floor
         * Mouse Pan

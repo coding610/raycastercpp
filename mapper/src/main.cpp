@@ -1,3 +1,4 @@
+#include <charconv>
 #include <exception>
 #include <raylib.h>
 #include <vector>
@@ -16,6 +17,11 @@ struct Object {
     float HEIGHT;
 };
 
+template<typename T>
+void DEB(T mess) {
+    std::cout << mess << "\n";
+}
+
 void draw_grid(std::vector<std::vector<Object>> grid, Vector2 cellsize) {
     std::vector<Color> colors = {
         BLACK,
@@ -28,18 +34,24 @@ void draw_grid(std::vector<std::vector<Object>> grid, Vector2 cellsize) {
     for (int i = 0; i < grid.size(); i++) {
         for (int j = 0; j < grid[i].size(); j++) {
             if (grid[i][j].TYPE == 0) continue;
-            DrawRectangle(
+            Rectangle r = Rectangle (
                 j * cellsize.x + SETTING_SIZE,
                 i * cellsize.y + SETTING_SIZE,
                 cellsize.x,
-                cellsize.y,
-                colors[grid[i][j].TYPE]
+                cellsize.y
+            );
+            DrawRectangle(r.x, r.y, r.width, r.height, colors[grid[i][j].TYPE]);
+            GuiDrawText(
+                std::to_string(grid[i][j].HEIGHT).substr(0, 3).c_str(),
+                r,
+                TEXT_ALIGN_MIDDLE,
+                BLACK
             );
         }
     }
 }
 
-void remake_grid(std::vector<std::vector<Object>>& grid, Vector2& cellsize, float fsize) {
+void remake_grid(std::vector<std::vector<Object>>& grid, std::vector<std::vector<std::vector<Object>>>& grid_history, Vector2& cellsize, float fsize, int& gridindex) {
     if ((int) fsize == grid.size()) return;
 
     cellsize = {
@@ -62,9 +74,11 @@ void remake_grid(std::vector<std::vector<Object>>& grid, Vector2& cellsize, floa
         }
         grid.push_back(jj);
     }
+
+    grid_history.push_back(grid); gridindex++;
 }
 
-void clear_grid(std::vector<std::vector<Object>>& grid) {
+void clear_grid(std::vector<std::vector<Object>>& grid, std::vector<std::vector<std::vector<Object>>>& grid_history, int& gridindex) {
     auto bgrid = grid;
     grid = {};
     for (int i = 0; i < bgrid.size(); i++) {
@@ -74,6 +88,9 @@ void clear_grid(std::vector<std::vector<Object>>& grid) {
         }
         grid.push_back(jj);
     }
+
+    grid_history.push_back(grid);
+    gridindex++;
 }
 
 void write_grid(std::vector<std::vector<Object>>& grid) {
@@ -152,51 +169,140 @@ void draw_lines(std::vector<std::vector<Object>>& grid, Vector2 cellsize) {
     }
 }
 
+void select_grid(
+    std::vector<std::vector<Object>>& grid,
+    std::vector<std::vector<std::vector<Object>>>& grid_history,
+    int& gridindex,
+    std::pair<Vector2, Vector2>& selectcell,
+    int type
+) {
+    for (int i = 0; i < grid.size(); i++) {
+        for (int j = 0; j < grid[0].size(); j++) {
+            if (((j >= selectcell.first.x && j <= selectcell.second.x) || (j <= selectcell.first.x && j >= selectcell.second.x))
+                && ((i >= selectcell.first.y && i <= selectcell.second.y) || (i <= selectcell.first.y && i >= selectcell.second.y))) {
+                grid[i][j].TYPE = type;
+            }
+        }
+    }
+
+    grid_history.push_back(grid); gridindex++;
+    selectcell = {{0, 0}, {0, 0}};
+}
+
+void undo(std::vector<std::vector<Object>>& grid, std::vector<std::vector<std::vector<Object>>> grid_history, int& gridindex) {
+    gridindex--;
+    grid = grid_history[gridindex];
+}
+
+void redo(std::vector<std::vector<Object>>& grid, std::vector<std::vector<std::vector<Object>>> grid_history, int& gridindex) {
+    gridindex++;
+    grid = grid_history[gridindex];
+}
+
 
 int main() {
     InitWindow(1000, 1000, "mapper");
     SetTargetFPS(60);
 
     float fsize = 50;
-    Vector2 cellsize; std::vector<std::vector<Object>> grid;
-    remake_grid(grid, cellsize, fsize);
+    Vector2 cellsize;
+    int gridindex = 0;
+    std::vector<std::vector<Object>> grid;
+    std::vector<std::vector<std::vector<Object>>> grid_history;
+    remake_grid(grid, grid_history, cellsize, fsize, gridindex);
+
+    bool selecting = false;
+    bool selected_area = false;
+    std::pair<Vector2, Vector2> selectcell = {{0, 0}, {0, 0}};
 
     int current_type = 1;
     while (!WindowShouldClose()) {
-        if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
+        if (IsKeyDown(KEY_BACKSPACE)) {
+            selecting = false;
+            selected_area = false;
+            selectcell = {{0, 0}, {0, 0}};
+        }
+        if (!IsKeyDown(KEY_LEFT_CONTROL)) {
             Vector2 mousepos = GetMousePosition();
             if (mousepos.x > 101 && mousepos.y > 101) {
-                mousepos.x -= 100; mousepos.y -= 100;
-                Vector2 cell = { 
-                    std::floor(mousepos.x / cellsize.x),
-                    std::floor(mousepos.y / cellsize.y)
-                };
-                grid[cell.y][cell.x].TYPE = current_type;
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                    selecting = true;
+                    Vector2 cell = { 
+                        std::floor((mousepos.x - SETTING_SIZE) / cellsize.x),
+                        std::floor((mousepos.y - SETTING_SIZE) / cellsize.y)
+                    };
+                    selectcell.first = cell;
+                } else if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && selecting) {
+                    Vector2 cell = { 
+                        std::floor((mousepos.x - SETTING_SIZE) / cellsize.x),
+                        std::floor((mousepos.y - SETTING_SIZE) / cellsize.y)
+                    };
+                    selectcell.second = cell;
+                } if (!IsMouseButtonDown(MOUSE_BUTTON_LEFT) && selecting) {
+                    selecting = false;
+                    selected_area = true;
+                }
+            }
+        } else {
+            if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
+                Vector2 mousepos = GetMousePosition();
+                if (mousepos.x > 101 && mousepos.y > 101) {
+                    selected_area = false; selectcell = {{0, 0}, {0, 0}};
+                    grid_history.push_back(grid); gridindex++;
+                    Vector2 cell = { 
+                        std::floor((mousepos.x - SETTING_SIZE) / cellsize.x),
+                        std::floor((mousepos.y - SETTING_SIZE) / cellsize.y)
+                    };
+                    grid[cell.y][cell.x].TYPE = current_type;
+                }
+            } else if (GetMouseWheelMove() != 0) {
+                Vector2 mousepos = GetMousePosition();
+                if (mousepos.x > 101 && mousepos.y > 101) {
+                    grid_history.push_back(grid); gridindex++;
+                    Vector2 cell = { 
+                        std::floor((mousepos.x - SETTING_SIZE) / cellsize.x),
+                        std::floor((mousepos.y - SETTING_SIZE) / cellsize.y)
+                    };
+                    grid[cell.y][cell.x].HEIGHT += GetMouseWheelMove() * 0.1;
+                    if (grid[cell.y][cell.x].HEIGHT < 0) {
+                        grid[cell.y][cell.x].HEIGHT = 0;
+                    }
+                }
             }
         }
 
-        remake_grid(grid, cellsize, fsize);
+        remake_grid(grid, grid_history, cellsize, fsize, gridindex);
 
         GuiSlider( Rectangle(200, 40, 700, 20), "10", "100", &fsize, 10, 100 );
         if (GuiButton(Rectangle(10, 10, 80, 80), "CLEAR")) {
-            clear_grid(grid);
-        } else if (GuiButton(Rectangle(10, 110, 80, 80), "0")) {
+            if (selected_area) { select_grid(grid, grid_history, gridindex, selectcell, 0); selected_area = false; }
+            else clear_grid(grid, grid_history, gridindex);
+        } if (GuiButton(Rectangle(10, 110, 80, 80), "0")) {
             current_type = 0;
-        } else if (GuiButton(Rectangle(10, 210, 80, 80), "1")) {
+            if (selected_area) { select_grid(grid, grid_history, gridindex, selectcell, current_type); selected_area = false; }
+        } if (GuiButton(Rectangle(10, 210, 80, 80), "1")) {
             current_type = 1;
-        } else if (GuiButton(Rectangle(10, 310, 80, 80), "2")) {
+            if (selected_area) { select_grid(grid, grid_history, gridindex, selectcell, current_type); selected_area = false; }
+        } if (GuiButton(Rectangle(10, 310, 80, 80), "2")) {
             current_type = 2;
-        } else if (GuiButton(Rectangle(10, 410, 80, 80), "3")) {
+            if (selected_area) { select_grid(grid, grid_history, gridindex, selectcell, current_type); selected_area = false; }
+        } if (GuiButton(Rectangle(10, 410, 80, 80), "3")) {
             current_type = 3;
-        } else if (GuiButton(Rectangle(10, 510, 80, 80), "4")) {
+            if (selected_area) { select_grid(grid, grid_history, gridindex, selectcell, current_type); selected_area = false; }
+        } if (GuiButton(Rectangle(10, 510, 80, 80), "4")) {
             current_type = 4;
-        } else if (GuiButton(Rectangle(10, 610, 80, 80), "BORDER")) {
+            if (selected_area) { select_grid(grid, grid_history, gridindex, selectcell, current_type); selected_area = false; }
+        } if (GuiButton(Rectangle(10, 610, 80, 80), "BORDER")) {
             grid_border(grid, current_type);
-        } else if (GuiButton(Rectangle(10, 710, 80, 80), "WRITE")) {
+        } if (GuiButton(Rectangle(10, 710, 80, 80), "WRITE")) {
             write_grid(grid);
-        } else if (GuiButton(Rectangle(10, 810, 80, 80), "READ")) {
+        } if (GuiButton(Rectangle(10, 810, 80, 80), "READ")) {
             read_saved_grid(grid, SAVEDPATH);
-        } 
+        } if (GuiButton(Rectangle(10, 910, 80, 35), "UNDO")) {
+            undo(grid, grid_history, gridindex);
+        } if (GuiButton(Rectangle(10, 955, 80, 35), "REDO")) {
+            redo(grid, grid_history, gridindex);
+        }
 
         BeginDrawing();
             ClearBackground(BLACK);
@@ -207,6 +313,28 @@ int main() {
             );
             draw_lines(grid, cellsize);
             draw_grid(grid, cellsize);
+
+            if (selectcell.second.x != 0) {
+                DrawRectangleRec(
+                    Rectangle (
+                        SETTING_SIZE + selectcell.first.x * cellsize.x,
+                        SETTING_SIZE + selectcell.first.y * cellsize.y,
+                        (selectcell.second.x - selectcell.first.x) * cellsize.x + cellsize.x,
+                        (selectcell.second.y - selectcell.first.y) * cellsize.y + cellsize.y
+                    ),
+                    Color(0, 0, 255, 50)
+                ); DrawRectangleLinesEx(
+                    Rectangle (
+                        SETTING_SIZE + selectcell.first.x * cellsize.x,
+                        SETTING_SIZE + selectcell.first.y * cellsize.y,
+                        (selectcell.second.x - selectcell.first.x) * cellsize.x + cellsize.x,
+                        (selectcell.second.y - selectcell.first.y) * cellsize.y + cellsize.y
+                    ),
+                    3,
+                    BLUE
+                );
+            }
+
         EndDrawing();
     }
 }
