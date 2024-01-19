@@ -37,17 +37,17 @@ void _Ray::cast(Grid* grid, Vector2 originpos, float rotation, Vector2 cellsize)
     ////// COLOR //////
     Vector2 cell = utils::cell(_end_position, cellsize, true);
     if (utils::inside_field(grid, cell)) {
-        _end_color = grid->get_colors()[grid->grid[(int) cell.x][(int) cell.y]];
+        _end_color = grid->get_colors()[grid->grid[(int) cell.x][(int) cell.y].TYPE];
 
         if (_end_position.x == vertical_pos.x && _end_position.y == vertical_pos.y
             && collide_vertical && utils::is_black(_end_color)
         ) {
-            _end_color = grid->get_colors()[grid->grid[(int) cell.x][(int) cell.y - 1]];
+            _end_color = grid->get_colors()[grid->grid[(int) cell.x][(int) cell.y - 1].TYPE];
         } else if (
             _end_position.x == horizontal_pos.x && _end_position.y == horizontal_pos.y
             && collide_horizontal && utils::is_black(_end_color)
         ) {
-            _end_color = grid->get_colors()[grid->grid[(int) cell.x - 1][(int) cell.y]];
+            _end_color = grid->get_colors()[grid->grid[(int) cell.x - 1][(int) cell.y].TYPE];
         }
     }
 

@@ -9,7 +9,7 @@
 
 int main() {
     const float ratio = 1.0;
-    const int height = 800;
+    const int height = 1000;
     const Vector2 resolution {height * ratio, height};
 
     InitWindow(resolution.x, resolution.y, "Raycaster");

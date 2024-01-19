@@ -22,7 +22,7 @@ private:
     Player* _player;
     const Vector2 _resolution;
 
-    const int _ray_resolution = 800;
+    const int _ray_resolution = 1000;
     const float _fov = PI / 2;
     const Vector2 _cellsize;
 

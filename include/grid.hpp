@@ -3,6 +3,11 @@
 #include <raylib.h>
 #include <vector>
 
+struct Object {
+    int TYPE;
+    float HEIGHT;
+};
+
 
 class Grid {
 private:
@@ -16,16 +21,7 @@ private:
     };
 
 public:
-    std::vector<std::vector<int>> grid = {
-        {2, 2, 2, 2, 2, 2, 2, 0},
-        {2, 0, 4, 0, 0, 0, 4, 0},
-        {2, 0, 4, 4, 0, 4, 0, 0},
-        {2, 0, 0, 4, 0, 4, 0, 4},
-        {2, 0, 2, 2, 0, 4, 0, 0},
-        {2, 0, 0, 0, 0, 2, 4, 0},
-        {2, 2, 2, 0, 2, 2, 0, 0},
-        {0, 0, 0, 0, 2, 0, 4, 4}
-    };
+    std::vector<std::vector<Object>> grid = {};
 
     inline Grid(Vector2 res) : _resolution(res) {};
     void draw_lines();

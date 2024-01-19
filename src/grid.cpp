@@ -37,12 +37,21 @@ void Grid::read_file(const char* path) {
     grid = {};
     std::string slice;
     while (std::getline(f, slice)) {
-        std::vector<int> gslice;
+        std::vector<Object> gslice;
+        std::vector<int> data = {0, 0};
+        int dataindex = 0;
         for (int j = 0; j < slice.length(); j++) {
-            if (slice[j] == ' ') continue;
-            int num = slice[j] - 48;
-            gslice.push_back(num);
+            if (slice[j] == ' ') {
+                gslice.push_back({.TYPE = data[0], .HEIGHT = (float) data[1]});
+                data = {0, 0};
+                dataindex = 0;
+            } else if (slice[j] == '_') {
+                dataindex++;
+            } else {
+                data[dataindex] = slice[j] - 48;
+            }
         }
+
         grid.push_back(gslice);
     }
 
@@ -52,13 +61,13 @@ void Grid::read_file(const char* path) {
 void Grid::draw_objects() {
     for (int i = 0; i < grid.size(); i++) {
         for (int j = 0; j < grid[i].size(); j++) {
-            if (grid[i][j] == 0) continue;
+            if (grid[i][j].TYPE == 0) continue;
             DrawRectangle(
                 j * _resolution.x / (grid.size()),
                 i * _resolution.y / (grid.size()),
                 _resolution.x / (grid.size()),
                 _resolution.y / (grid.size()),
-                _object_colors[grid[i][j]]
+                _object_colors[grid[i][j].TYPE]
             );
         }
     }

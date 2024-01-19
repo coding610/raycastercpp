@@ -34,7 +34,7 @@ void Player::update(float delta) {
     
     for (int i = 0; i < _grid->grid.size(); i++) {
         for (int j = 0; j < _grid->grid[i].size(); j++) {
-            if (_grid->grid[i][j] == 0) continue;
+            if (_grid->grid[i][j].TYPE == 0) continue;
 
             Face face = inside(
                 {j * _resolution.x / (_grid->grid.size()),
