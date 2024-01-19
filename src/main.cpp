@@ -1,7 +1,6 @@
 #include <raylib.h>
 #include <chrono>
 #include "player.hpp"
-#include "visualizer.hpp"
 #include "raymanager.hpp"
 #include "grid.hpp"
 #include "utils.hpp"
@@ -15,22 +14,17 @@ int main() {
     InitWindow(resolution.x, resolution.y, "Raycaster");
     SetTargetFPS(60);
 
-    Grid* grid = new Grid(resolution); grid->read_file("mapper/output.txt");
-    Player* player = new Player(grid, resolution);
-    RayManager* rays = new RayManager(player, grid, resolution);
-    Visualizer* visualizer = new Visualizer(grid, rays, player);
+    Grid* grid = new Grid(); grid->read_file("mapper/output.txt");
+    Player* player = new Player(grid);
+    RayManager* rays = new RayManager(player, grid);
 
     float delta = 0;
     bool gamemode = 0; // 0 for 2d, 1 for 3d
     while (!WindowShouldClose()) {
         auto delta1 = std::chrono::steady_clock::now();
 
-        if (IsKeyPressed(KEY_ENTER)) {
-            gamemode = !gamemode;
-        }
-
+        if (IsKeyPressed(KEY_ENTER)) gamemode = !gamemode;
         player->update(delta);
-        rays->update();
 
         BeginDrawing();
             ClearBackground(Color(7, 7, 10));
@@ -39,9 +33,8 @@ int main() {
                 grid->draw_objects();
                 grid->draw_lines();
                 player->draw();
-                rays->draw();
             } else {
-                visualizer->draw();
+                rays->update();
             }
 
             DrawFPS(10, 10);
@@ -54,5 +47,4 @@ int main() {
 
     delete grid;
     delete player;
-    delete visualizer;
 }

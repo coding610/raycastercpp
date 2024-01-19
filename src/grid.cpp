@@ -10,18 +10,18 @@ void Grid::draw_lines() {
     // Assuming that grid has the same width and height
     for (int i = 0; i <= grid.size(); i++) {
         DrawLine(
-            i * _resolution.x / (grid.size()),
+            i * (float) GetRenderWidth() / (grid.size()),
             0,
-            i * _resolution.x / (grid.size()),
-            _resolution.y,
+            i * (float) GetRenderWidth() / (grid.size()),
+            (float) GetRenderHeight(),
             Color(200, 200, 255, 30)
         );
 
         DrawLine(
             0,
-            i * _resolution.y / (grid.size()),
-            _resolution.x,
-            i * _resolution.y / (grid.size()),
+            i * (float) GetRenderHeight() / (grid.size()),
+            (float) GetRenderWidth(),
+            i * (float) GetRenderHeight() / (grid.size()),
             Color(200, 200, 255, 30)
         );
     }
@@ -63,10 +63,10 @@ void Grid::draw_objects() {
         for (int j = 0; j < grid[i].size(); j++) {
             if (grid[i][j].TYPE == 0) continue;
             DrawRectangle(
-                j * _resolution.x / (grid.size()),
-                i * _resolution.y / (grid.size()),
-                _resolution.x / (grid.size()),
-                _resolution.y / (grid.size()),
+                j * (float) GetRenderWidth() / (grid.size()),
+                i * (float) GetRenderHeight() / (grid.size()),
+                (float) GetRenderWidth() / (grid.size()),
+                (float) GetRenderHeight() / (grid.size()),
                 _object_colors[grid[i][j].TYPE]
             );
         }

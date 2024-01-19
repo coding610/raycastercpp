@@ -6,6 +6,12 @@
 #include "grid.hpp"
 
 class _Ray {
+private:
+    Grid* _grid;
+    Player* _player;
+    Vector2 _cellsize;
+    const float _UNIT_HEIGHT = GetRenderHeight() / 20.0;
+
 public:
     Vector2 _end_position;
     Color _end_color = DARKGRAY;
@@ -14,9 +20,17 @@ public:
     const float _MAX_DEPTH = 10;
     float _MAX_RAY_LENGTH;
 
-    _Ray(float MRL) : _MAX_RAY_LENGTH(MRL) {}
-    void cast(Grid* grid, Vector2 originpos, float rotation, float originangle, Vector2 cellsize, const float MAX_RAY_LENGTH);
-    void draw();
+    _Ray(Grid* g, Player* p, Vector2 cl);
+    void cast(
+        Grid* grid,
+        Vector2 originpos,
+        float rotation,
+        float originangle,
+        Vector2 cellsize,
+        int i,
+        int size
+    );
+    void draw(int i, int size) const;
 };
 
 
@@ -24,17 +38,15 @@ class RayManager {
 private:
     Grid* _grid;
     Player* _player;
-    const Vector2 _resolution;
 
     const int _ray_resolution = 1000;
     const float _fov = PI / 4;
     const Vector2 _cellsize;
 
 public:
-    int _MAX_RAY_LENGTH;
     std::vector<_Ray*> _rays;
 
-    RayManager(Player* pl, Grid* grd, Vector2 res);
+    RayManager(Player* pl, Grid* grd);
     void update();
     void draw();
 };

@@ -15,11 +15,9 @@ enum Face {
 
 class Player {
 private:
-    const Vector2 _resolution;
     Grid* _grid;
 
     Vector2 _position = {150, 150};
-    Vector2 _velocity = {0, 0};
     Vector2 _rotation = {(float) (GetRenderHeight() / 2.0), PI};
 
     // Constants
@@ -32,7 +30,7 @@ private:
     const Vector2 _MOVEMENT_ACC = {3, 3};
 
 public:
-    inline Player(Grid* grid, Vector2 res) : _grid(grid), _resolution(res) {
+    inline Player(Grid* grid) : _grid(grid) {
         _radius = ((float) GetRenderWidth() / _grid->grid.size()) / 4;
         _speed = ((float) GetRenderWidth() * _grid->grid.size()) / 150;
     }

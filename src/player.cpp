@@ -50,10 +50,10 @@ void Player::update(float delta) {
             if (_grid->grid[i][j].TYPE == 0) continue;
 
             Face face = inside(
-                {j * _resolution.x / (_grid->grid.size()),
-                i * _resolution.y / (_grid->grid.size())},
-                {_resolution.x / (_grid->grid.size()),
-                _resolution.y / (_grid->grid.size())}
+                {j * (float) GetRenderWidth() / (_grid->grid.size()),
+                 i * (float) GetRenderHeight() / (_grid->grid.size())},
+                {(float) GetRenderWidth() / (_grid->grid.size()),
+                 (float) GetRenderHeight() / (_grid->grid.size())}
             );
 
             if (face == Face::UP || face == Face::DOWN) {
