@@ -6,7 +6,7 @@
 #include "utils.hpp"
 
 
-void _Ray::cast(Grid* grid, Vector2 originpos, float rotation, Vector2 cellsize) {
+void _Ray::cast(Grid* grid, Vector2 originpos, float rotation, float fov, Vector2 cellsize, const float MAX_RAY_LENGTH) {
     ////// PREREQUISITS //////
     _end_color = BLACK;
     Vector2 vertical_pos = { originpos.x, utils::cellpos(originpos, cellsize, 0).y };
@@ -28,9 +28,12 @@ void _Ray::cast(Grid* grid, Vector2 originpos, float rotation, Vector2 cellsize)
     }
 
     ////// SELECTING RAY //////
+    bool ray_selected; // 0 for vert, 1 for hori
     if (utils::distance(originpos, vertical_pos) >= utils::distance(originpos, horizontal_pos)) {
+        ray_selected = 1;
         _end_position = horizontal_pos;
     } else {
+        ray_selected = 0;
         _end_position = vertical_pos;
     }
 
@@ -39,19 +42,15 @@ void _Ray::cast(Grid* grid, Vector2 originpos, float rotation, Vector2 cellsize)
     if (utils::inside_field(grid, cell)) {
         _end_color = grid->get_colors()[grid->grid[(int) cell.x][(int) cell.y].TYPE];
 
-        if (_end_position.x == vertical_pos.x && _end_position.y == vertical_pos.y
-            && collide_vertical && utils::is_black(_end_color)
-        ) {
+        if (_end_position.x == vertical_pos.x && _end_position.y == vertical_pos.y && collide_vertical && utils::is_black(_end_color))
             _end_color = grid->get_colors()[grid->grid[(int) cell.x][(int) cell.y - 1].TYPE];
-        } else if (
-            _end_position.x == horizontal_pos.x && _end_position.y == horizontal_pos.y
-            && collide_horizontal && utils::is_black(_end_color)
-        ) {
+        else if (_end_position.x == horizontal_pos.x && _end_position.y == horizontal_pos.y && collide_horizontal && utils::is_black(_end_color))
             _end_color = grid->get_colors()[grid->grid[(int) cell.x - 1][(int) cell.y].TYPE];
-        }
+
+        _height = grid->grid[(int) cell.x][(int) cell.y].HEIGHT;
     }
 
-    ////// LENGTH //////
+    ////// FISH-EYE ADJUSTED LENGTH //////
     _length = utils::distance(originpos, _end_position);
 }
 
@@ -60,23 +59,13 @@ void RayManager::update() {
         float rot = _player->get_rotation() + i * (_fov / _rays.size()) - (_fov / 2);
         utils::adjust_radians(rot);
 
-        _rays[i]->cast(_grid, _player->get_position(), rot, _cellsize);
-        
-        ////// Ray go round //////
-        if (_rays[i]->_length > _MAX_REY_LENGTH) {
-            _rays[i]->_end_position = {
-                _player->get_position().x + _MAX_REY_LENGTH * std::sin(rot),
-                _player->get_position().y + _MAX_REY_LENGTH * std::cos(rot)
-            };
-            _rays[i]->_length = utils::distance(_player->get_position(), _rays[i]->_end_position);
-            if (_rays[i]->_length > _MAX_REY_LENGTH) _rays[i]->_length = _MAX_REY_LENGTH;
-        }
+        _rays[i]->cast(_grid, _player->get_position(), rot, _fov, _cellsize, _MAX_RAY_LENGTH);
     }
 }
 
 void RayManager::draw() {
     for (auto& ray : _rays) {
-        DrawLineV(_player->get_position(), ray->_end_position, WHITE);
+        DrawLineV(_player->get_position(), ray->_end_position, YELLOW);
     }
 }
 
@@ -88,5 +77,5 @@ RayManager::RayManager(Player* pl, Grid* grd, Vector2 res)
         _rays.push_back(new _Ray);
     }
 
-    _MAX_REY_LENGTH = _rays[0]->_MAX_DEPTH * ((float) GetRenderWidth() / (float) _grid->grid.size());
+    _MAX_RAY_LENGTH = _rays[0]->_MAX_DEPTH * ((float) GetRenderWidth() / (float) _grid->grid.size());
 }

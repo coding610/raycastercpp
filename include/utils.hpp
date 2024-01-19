@@ -30,12 +30,12 @@ inline int square(int num) {
 }
 
 inline float distance(Vector2 p1, Vector2 p2) {
-    if (p1.y > 10000 || p1.y < -10000 || p1.x > 10000 || p1.y < -10000
-        || p2.y > 10000 || p2.y < -10000 || p2.x > 10000 || p2.y < -10000
+    const long long MAX = 10000;
+    if (p1.y > MAX || p1.y < -MAX || p1.x > MAX || p1.y < -MAX
+        || p2.y > MAX || p2.y < -MAX || p2.x > MAX || p2.y < -MAX
     ) {
-        return 100000;
+        return MAX;
     }
-
 
     return std::sqrt(
         square(std::floor(p1.x - p2.x)) +
@@ -101,24 +101,24 @@ inline float get_step(Vector2 pos, bool aligment, float rotation, Vector2 cellsi
     if (relative) {
         if (aligment == 0) {
             if (rotation < PI) {
-                return cellsize.x - std::abs(pos.x - utils::cellpos(pos, cellsize, 0).x);
-            } else {
                 return -std::abs(pos.x - utils::cellpos(pos, cellsize, 0).x);
+            } else {
+                return cellsize.x - std::abs(pos.x - utils::cellpos(pos, cellsize, 0).x);
             }
         } else {
             if (rotation > PI / 2 && rotation < 1.5 * PI) {
-                return -std::abs(pos.y - utils::cellpos(pos, cellsize, 1).y);
-            } else {
                 return cellsize.y - std::abs(pos.y - utils::cellpos(pos, cellsize, 1).y);
+            } else {
+                return -std::abs(pos.y - utils::cellpos(pos, cellsize, 1).y);
             }
         }
     } else {
         if (aligment == 0) {
-            if (rotation < PI) return cellsize.y;
-            else return -cellsize.y;
-        } else {
-            if (rotation > PI / 2 && rotation < 1.5 * PI) return -cellsize.y;
+            if (rotation < PI) return -cellsize.y;
             else return cellsize.y;
+        } else {
+            if (rotation > PI / 2 && rotation < 1.5 * PI) return cellsize.y;
+            else return -cellsize.y;
         }
     }
 }
@@ -152,31 +152,23 @@ inline void adjust_radians(float& rad) {
 inline bool collide(Grid* grid, Vector2 pos, Vector2 cellsize, bool aligment, bool& adjusted_face) {
     Vector2 cell = utils::cell(pos, cellsize, true);
 
-    if (cell.x > 0 && cell.y > 0 &&
-        cell.x > grid->grid.size() && cell.y > grid->grid[0].size()
-    ) {
-        return true;
-    }
-
-    if (cell.x > 0 && cell.y > 0 &&
+    if (cell.x >= 0 && cell.y >= 0 &&
         cell.x < grid->grid.size() && cell.y < grid->grid[0].size()
     ) {
         if (grid->grid[cell.x][cell.y].TYPE != 0) {
             return true;
-        } else if (cell.y - 1 > 0 && aligment == 0) {
+        } else if (cell.y - 1 >= 0 && aligment == 0) {
             if (grid->grid[cell.x][cell.y - 1].TYPE != 0) {
                 adjusted_face = true;
                 return true;
             }
-        } else if (cell.x - 1 > 0 && aligment == 1) {
+        } else if (cell.x - 1 >= 0 && aligment == 1) {
             if (grid->grid[cell.x - 1][cell.y].TYPE != 0) {
                 adjusted_face = true;
                 return true;
             }
         }
-    } // else {
-     //   return true;
-    // }
+    }
 
     return false;
 }

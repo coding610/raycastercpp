@@ -15,7 +15,7 @@ private:
     const std::vector<Color> _object_colors {
         BLACK, // NONE OBJECT
         WHITE,
-        RED,
+        Color(255, 0, 0, 255),
         GREEN,
         BLUE
     };

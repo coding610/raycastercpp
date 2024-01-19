@@ -20,18 +20,19 @@ private:
 
     Vector2 _position = {150, 150};
     Vector2 _velocity = {0, 0};
-    float _forwards_velocity = 0;
-    float _rotation = PI/2; // TODO: test going 0rad
+    float _rotation = PI;
+    float _height = GetRenderHeight() / 2.0;
 
     // Constants
     float _radius;
-    const float _speed = 100;
+    float _speed;
     const Color _color = WHITE;
     const Color _outline_color = BLACK;
 
 public:
     inline Player(Grid* grid, Vector2 res) : _grid(grid), _resolution(res) {
         _radius = ((float) GetRenderWidth() / _grid->grid.size()) / 4;
+        _speed = ((float) GetRenderWidth() * _grid->grid.size()) / 150;
     }
 
     void update(float delta);
@@ -42,5 +43,7 @@ public:
         return _position;
     } inline float get_rotation() {
         return _rotation;
+    } inline float get_height() {
+        return _height;
     }
 };

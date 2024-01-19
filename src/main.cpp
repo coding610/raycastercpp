@@ -18,7 +18,7 @@ int main() {
     Grid* grid = new Grid(resolution); grid->read_file("mapper/output.txt");
     Player* player = new Player(grid, resolution);
     RayManager* rays = new RayManager(player, grid, resolution);
-    Visualizer* visualizer = new Visualizer(grid, rays);
+    Visualizer* visualizer = new Visualizer(grid, rays, player);
 
     float delta = 0;
     bool gamemode = 0; // 0 for 2d, 1 for 3d

@@ -10,9 +10,11 @@ public:
     Vector2 _end_position;
     Color _end_color = DARKGRAY;
     float _length;
-    const float _MAX_DEPTH = 2;
+    float _height;
+    const float _MAX_DEPTH = 10;
 
-    void cast(Grid* grid, Vector2 originpos, float rotation, Vector2 cellsize);
+    void cast(Grid* grid, Vector2 originpos, float rotation, float fov, Vector2 cellsize, const float MAX_RAY_LENGTH);
+    void draw();
 };
 
 
@@ -23,11 +25,11 @@ private:
     const Vector2 _resolution;
 
     const int _ray_resolution = 1000;
-    const float _fov = PI / 2;
+    const float _fov = PI / 4;
     const Vector2 _cellsize;
 
 public:
-    int _MAX_REY_LENGTH;
+    int _MAX_RAY_LENGTH;
     std::vector<_Ray*> _rays;
 
     RayManager(Player* pl, Grid* grd, Vector2 res);
