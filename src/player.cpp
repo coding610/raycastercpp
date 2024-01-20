@@ -9,24 +9,24 @@
 #include "utils.hpp"
 
 void Player::update(float delta) {
-    utils::adjust_radians(_rotation.y);
+    utils::adjust_radians(_rotation.x);
 
     ////// ACCELERATION //////
     float forwards_velocity = 0;
     float strafing_velocity = 0;
-    float rot_acc = _ROTATION_ACC.y;
-    float forw_acc = _MOVEMENT_ACC.x;
-    float strafe_acc = _MOVEMENT_ACC.y;
+    float rot_acc = _ROTATION_ACC.x;
+    float movement_acc = 5;
 
     ////// MOVEMENT //////
-    if (IsKeyDown(KEY_LEFT_CONTROL)) forw_acc = 1;
-    if (IsKeyDown(KEY_LEFT_SHIFT)) forw_acc = 10;
-    if (IsKeyDown(KEY_LEFT))  _rotation.y += rot_acc * delta;
-    if (IsKeyDown(KEY_RIGHT)) _rotation.y -= rot_acc * delta;
-    if (IsKeyDown(KEY_W)) forwards_velocity += forw_acc;
-    if (IsKeyDown(KEY_S)) forwards_velocity -= forw_acc;
-    if (IsKeyDown(KEY_A)) strafing_velocity += strafe_acc;
-    if (IsKeyDown(KEY_D)) strafing_velocity -= strafe_acc;
+    if (IsKeyDown(KEY_LEFT_SHIFT)) movement_acc = 10;
+    if (IsKeyDown(KEY_W)) forwards_velocity += movement_acc * _MOVEMENT_ACC.x;      // +X MOVEMENT
+    if (IsKeyDown(KEY_S)) forwards_velocity -= movement_acc * _MOVEMENT_ACC.x;      // -X MOVEMENT
+    if (IsKeyDown(KEY_A)) strafing_velocity += movement_acc * _MOVEMENT_ACC.z;      // +Z MOVEMENT
+    if (IsKeyDown(KEY_D)) strafing_velocity -= movement_acc * _MOVEMENT_ACC.z;      // -Z MOVEMENT
+    if (IsKeyDown(KEY_LEFT))  _rotation.x += rot_acc * delta;                       // +X ROTATION
+    if (IsKeyDown(KEY_RIGHT)) _rotation.x -= rot_acc * delta;                       // -X ROTATION
+    if (IsKeyDown(KEY_UP)) _rotation.y += _ROTATION_ACC.y * delta;                  // +Y ROTATION
+    if (IsKeyDown(KEY_DOWN)) _rotation.y -= _ROTATION_ACC.y * delta;                // -Y ROTATION
 
     ////// NEUTRALIZE VECTORING //////
     if (strafing_velocity != 0 && forwards_velocity != 0) {
@@ -34,16 +34,12 @@ void Player::update(float delta) {
         forwards_velocity /= std::sqrt(2);
     }
 
-    ////// 3D VIEW ANGLE //////
-    if (IsKeyDown(KEY_UP)) _rotation.x += _ROTATION_ACC.x * delta;
-    if (IsKeyDown(KEY_DOWN)) _rotation.x -= _ROTATION_ACC.x * delta;
-
     ////// MOVE PLAYER //////
-    _position.x += std::sin(_rotation.y - PI) * forwards_velocity * _speed * delta;
-    _position.y += std::cos(_rotation.y - PI) * forwards_velocity * _speed * delta;
-    _position.x += std::sin(_rotation.y - PI + PI / 2) * strafing_velocity * _speed * delta;
-    _position.y += std::cos(_rotation.y - PI + PI / 2) * strafing_velocity * _speed * delta;
-    
+    _position.x += std::sin(_rotation.x - PI) * forwards_velocity * _speed * delta;
+    _position.y += std::cos(_rotation.x - PI) * forwards_velocity * _speed * delta;
+    _position.x += std::sin(_rotation.x - PI + PI / 2) * strafing_velocity * _speed * delta;
+    _position.y += std::cos(_rotation.x - PI + PI / 2) * strafing_velocity * _speed * delta;
+
     ////// COLLISION WITH OBJECTS //////
     for (int i = 0; i < _grid->grid.size(); i++) {
         for (int j = 0; j < _grid->grid[i].size(); j++) {
@@ -57,17 +53,17 @@ void Player::update(float delta) {
             );
 
             if (face == Face::UP || face == Face::DOWN) {
-                if (forwards_velocity != 0) _position.y -= std::cos(_rotation.y - PI) * forwards_velocity * _speed * delta;
-                if (strafing_velocity != 0) _position.y -= std::cos(_rotation.y - PI + PI / 2) * strafing_velocity * _speed * delta;
+                if (forwards_velocity != 0) _position.y -= std::cos(_rotation.x - PI) * forwards_velocity * _speed * delta;
+                if (strafing_velocity != 0) _position.y -= std::cos(_rotation.x - PI + PI / 2) * strafing_velocity * _speed * delta;
             } else if (face == Face::LEFT || face == Face::RIGHT) {
-                if (forwards_velocity != 0) _position.x -= std::sin(_rotation.y - PI) * forwards_velocity * _speed * delta;
-                if (strafing_velocity != 0) _position.x -= std::sin(_rotation.y - PI + PI / 2) * strafing_velocity * _speed * delta;
+                if (forwards_velocity != 0) _position.x -= std::sin(_rotation.x - PI) * forwards_velocity * _speed * delta;
+                if (strafing_velocity != 0) _position.x -= std::sin(_rotation.x - PI + PI / 2) * strafing_velocity * _speed * delta;
             }
         }
     }
 }
 
-Face Player::inside(Vector2 pos, Vector2 size) {
+Face Player::inside(Vector2 pos, Vector2 size) { // TODO: to utils
     if (pos.x < _position.x + _radius && pos.x + size.x > _position.x - _radius &&
         pos.y < _position.y + _radius && pos.y + size.y > _position.y - _radius
     ) {
@@ -80,11 +76,12 @@ Face Player::inside(Vector2 pos, Vector2 size) {
         };
 
         std::vector<float> distances;
-        for (auto &f : faces)
-        distances.push_back(utils::distance(_position, f));
+        for (auto &f : faces) distances.push_back(utils::distance(_position, f));
+
         int min_index = std::distance(
-        std::begin(distances),
-        std::min_element(std::begin(distances), std::end(distances)));
+            std::begin(distances),
+            std::min_element(std::begin(distances), std::end(distances))
+        );
 
         return Face(min_index);
     }

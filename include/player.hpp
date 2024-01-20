@@ -25,9 +25,8 @@ private:
     float _speed;
     const Color _color = WHITE;
     const Color _outline_color = BLACK;
-
-    const Vector2 _ROTATION_ACC = {1000, 2}; // rotates around the x and y plane
-    const Vector2 _MOVEMENT_ACC = {3, 3};
+    const Vector2 _ROTATION_ACC = {2, 1000}; // rotates around the x and y plane
+    const Vector3 _MOVEMENT_ACC = {1, 0.01, 1}; // x -> forward, y -> up and down, z -> strafing
 
 public:
     inline Player(Grid* grid) : _grid(grid) {
@@ -42,8 +41,8 @@ public:
     inline Vector2 get_position() {
         return _position;
     } inline float get_rotation() {
-        return _rotation.y;
-    } inline float get_rotationx() {
         return _rotation.x;
+    } inline float get_rotationy() {
+        return _rotation.y;
     }
 };

@@ -5,7 +5,7 @@
 
 struct Object {
     int TYPE;
-    float HEIGHT;
+    int HEIGHT;
 };
 
 

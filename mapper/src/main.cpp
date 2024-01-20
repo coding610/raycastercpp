@@ -14,7 +14,7 @@
 
 struct Object {
     int TYPE;
-    float HEIGHT;
+    int HEIGHT;
 };
 
 template<typename T>
@@ -119,22 +119,21 @@ void read_saved_grid(std::vector<std::vector<Object>>& grid, const char* path) {
     grid = {};
     std::string slice;
     while (std::getline(f, slice)) {
-        std::vector<Object> gslice;
+        std::vector<Object> new_slice;
         std::vector<int> data = {0, 0};
         int dataindex = 0;
         for (int j = 0; j < slice.length(); j++) {
             if (slice[j] == ' ') {
-                gslice.push_back({.TYPE = data[0], .HEIGHT = (float) data[1]});
-                data = {0, 0};
-                dataindex = 0;
+                new_slice.push_back({ .TYPE = data[0], .HEIGHT = data[1] });
+                data = {0, 0}; dataindex = 0;
             } else if (slice[j] == '_') {
                 dataindex++;
             } else {
-                data[dataindex] = slice[j] - 48;
+                data[dataindex] = (10 * data[dataindex]) + (slice[j] - '0');
             }
         }
 
-        grid.push_back(gslice);
+        grid.push_back(new_slice);
     }
 
     f.close();
@@ -243,30 +242,28 @@ int main() {
                     selected_area = true;
                 }
             }
-        } else {
-            if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
-                Vector2 mousepos = GetMousePosition();
-                if (mousepos.x > 101 && mousepos.y > 101) {
-                    selected_area = false; selectcell = {{0, 0}, {0, 0}};
-                    grid_history.push_back(grid); gridindex++;
-                    Vector2 cell = { 
-                        std::floor((mousepos.x - SETTING_SIZE) / cellsize.x),
-                        std::floor((mousepos.y - SETTING_SIZE) / cellsize.y)
-                    };
-                    grid[cell.y][cell.x].TYPE = current_type;
-                }
-            } else if (GetMouseWheelMove() != 0) {
-                Vector2 mousepos = GetMousePosition();
-                if (mousepos.x > 101 && mousepos.y > 101) {
-                    grid_history.push_back(grid); gridindex++;
-                    Vector2 cell = { 
-                        std::floor((mousepos.x - SETTING_SIZE) / cellsize.x),
-                        std::floor((mousepos.y - SETTING_SIZE) / cellsize.y)
-                    };
-                    grid[cell.y][cell.x].HEIGHT += GetMouseWheelMove() * 0.1;
-                    if (grid[cell.y][cell.x].HEIGHT < 0) {
-                        grid[cell.y][cell.x].HEIGHT = 0;
-                    }
+        } if (IsKeyDown(KEY_LEFT_CONTROL) && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
+            Vector2 mousepos = GetMousePosition();
+            if (mousepos.x > 101 && mousepos.y > 101) {
+                selected_area = false; selectcell = {{0, 0}, {0, 0}};
+                grid_history.push_back(grid); gridindex++;
+                Vector2 cell = { 
+                    std::floor((mousepos.x - SETTING_SIZE) / cellsize.x),
+                    std::floor((mousepos.y - SETTING_SIZE) / cellsize.y)
+                };
+                grid[cell.y][cell.x].TYPE = current_type;
+            }
+        } else if (GetMouseWheelMove() != 0) {
+            Vector2 mousepos = GetMousePosition();
+            if (mousepos.x > 101 && mousepos.y > 101) {
+                grid_history.push_back(grid); gridindex++;
+                Vector2 cell = { 
+                    std::floor((mousepos.x - SETTING_SIZE) / cellsize.x),
+                    std::floor((mousepos.y - SETTING_SIZE) / cellsize.y)
+                };
+                grid[cell.y][cell.x].HEIGHT += GetMouseWheelMove(); // 10 is one block height
+                if (grid[cell.y][cell.x].HEIGHT < 0) {
+                    grid[cell.y][cell.x].HEIGHT = 0;
                 }
             }
         }

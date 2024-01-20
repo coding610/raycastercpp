@@ -10,15 +10,24 @@ private:
     Grid* _grid;
     Player* _player;
     Vector2 _cellsize;
-    const float _UNIT_HEIGHT = GetRenderHeight() / 20.0;
 
-public:
     Vector2 _end_position;
     Color _end_color = DARKGRAY;
     float _length;
     float _height;
+
+
+    ////// CONSTANTS //////
+    const float _UNIT_HEIGHT = GetRenderHeight() / 10.0;
     const float _MAX_DEPTH = 10;
     float _MAX_RAY_LENGTH;
+
+    ////// DEBUGGING //////
+    float _c = 2;
+    float _d = 2;
+
+public:
+    int _ray_collide = 0;
 
     _Ray(Grid* g, Player* p, Vector2 cl);
     void cast(
@@ -27,10 +36,12 @@ public:
         float rotation,
         float originangle,
         Vector2 cellsize,
-        int i,
-        int size
+        int clr_before
     );
     void draw(int i, int size) const;
+    inline Vector2 get_position() {
+        return _end_position;
+    }
 };
 
 
@@ -42,11 +53,13 @@ private:
     const int _ray_resolution = 1000;
     const float _fov = PI / 4;
     const Vector2 _cellsize;
+    bool _debug = false;
+    bool* _gamemode;
 
 public:
     std::vector<_Ray*> _rays;
 
-    RayManager(Player* pl, Grid* grd);
+    RayManager(Player* pl, Grid* grd, bool* gamemode);
     void update();
-    void draw();
+    void debug_draw();
 };

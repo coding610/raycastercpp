@@ -14,12 +14,13 @@ int main() {
     InitWindow(resolution.x, resolution.y, "Raycaster");
     SetTargetFPS(60);
 
-    Grid* grid = new Grid(); grid->read_file("mapper/output.txt");
-    Player* player = new Player(grid);
-    RayManager* rays = new RayManager(player, grid);
-
     float delta = 0;
     bool gamemode = 0; // 0 for 2d, 1 for 3d
+
+    Grid* grid = new Grid(); grid->read_file("mapper/output.txt");
+    Player* player = new Player(grid);
+    RayManager* rays = new RayManager(player, grid, &gamemode);
+
     while (!WindowShouldClose()) {
         auto delta1 = std::chrono::steady_clock::now();
 
@@ -29,12 +30,12 @@ int main() {
         BeginDrawing();
             ClearBackground(Color(7, 7, 10));
 
+            rays->update();
             if (gamemode == 0) {
                 grid->draw_objects();
                 grid->draw_lines();
                 player->draw();
-            } else {
-                rays->update();
+                rays->debug_draw();
             }
 
             DrawFPS(10, 10);

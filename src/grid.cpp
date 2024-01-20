@@ -37,22 +37,21 @@ void Grid::read_file(const char* path) {
     grid = {};
     std::string slice;
     while (std::getline(f, slice)) {
-        std::vector<Object> gslice;
+        std::vector<Object> new_slice;
         std::vector<int> data = {0, 0};
         int dataindex = 0;
         for (int j = 0; j < slice.length(); j++) {
             if (slice[j] == ' ') {
-                gslice.push_back({.TYPE = data[0], .HEIGHT = (float) data[1]});
-                data = {0, 0};
-                dataindex = 0;
+                new_slice.push_back({ .TYPE = data[0], .HEIGHT = data[1] });
+                data = {0, 0}; dataindex = 0;
             } else if (slice[j] == '_') {
                 dataindex++;
             } else {
-                data[dataindex] = slice[j] - 48;
+                data[dataindex] = (10 * data[dataindex]) + (slice[j] - '0');
             }
         }
 
-        grid.push_back(gslice);
+        grid.push_back(new_slice);
     }
 
     f.close();
