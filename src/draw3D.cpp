@@ -10,9 +10,9 @@ void _Ray::draw(int i, int size) const {
 
     // Draw wall
     DrawLine(
-        GetRenderWidth() - (i+1) * (GetRenderWidth() / size),
+        GetRenderWidth() - (i+1) * ((float) GetRenderWidth() / size),
         _player->get_rotationy() - (wall_height / 2) * (_height / 10),
-        GetRenderWidth() - (i+1) * (GetRenderWidth() / size),
+        GetRenderWidth() - (i+1) * ((float) GetRenderWidth() / size),
         _player->get_rotationy() + (wall_height / 2),
         Color(
             _end_color.r,

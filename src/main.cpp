@@ -4,6 +4,7 @@
 #include "raymanager.hpp"
 #include "grid.hpp"
 #include "utils.hpp"
+#include "menu.hpp"
 
 
 int main() {
@@ -17,8 +18,9 @@ int main() {
     float delta = 0;
     bool gamemode = 0; // 0 for 2d, 1 for 3d
 
+    Menu* menu = new Menu();
     Grid* grid = new Grid(); grid->read_file("mapper/output.txt");
-    Player* player = new Player(grid);
+    Player* player = new Player(grid, menu);
     RayManager* rays = new RayManager(player, grid, &gamemode);
 
     while (!WindowShouldClose()) {
@@ -26,6 +28,7 @@ int main() {
 
         if (IsKeyPressed(KEY_ENTER)) gamemode = !gamemode;
         player->update(delta);
+        menu->update();
 
         BeginDrawing();
             ClearBackground(Color(7, 7, 10));

@@ -1,4 +1,5 @@
 #include "player.hpp"
+#include "grid.hpp"
 #include "utils.hpp"
 #include <algorithm>
 #include <cmath>
@@ -9,12 +10,13 @@
 #include "utils.hpp"
 
 void Player::update(float delta) {
+    if (!_menu->playing) return;
+
     utils::adjust_radians(_rotation.x);
 
     ////// ACCELERATION //////
     float forwards_velocity = 0;
     float strafing_velocity = 0;
-    float rot_acc = _ROTATION_ACC.x;
     float movement_acc = 5;
 
     ////// MOVEMENT //////
@@ -23,10 +25,8 @@ void Player::update(float delta) {
     if (IsKeyDown(KEY_S)) forwards_velocity -= movement_acc * _MOVEMENT_ACC.x;      // -X MOVEMENT
     if (IsKeyDown(KEY_A)) strafing_velocity += movement_acc * _MOVEMENT_ACC.z;      // +Z MOVEMENT
     if (IsKeyDown(KEY_D)) strafing_velocity -= movement_acc * _MOVEMENT_ACC.z;      // -Z MOVEMENT
-    if (IsKeyDown(KEY_LEFT))  _rotation.x += rot_acc * delta;                       // +X ROTATION
-    if (IsKeyDown(KEY_RIGHT)) _rotation.x -= rot_acc * delta;                       // -X ROTATION
-    if (IsKeyDown(KEY_UP)) _rotation.y += _ROTATION_ACC.y * delta;                  // +Y ROTATION
-    if (IsKeyDown(KEY_DOWN)) _rotation.y -= _ROTATION_ACC.y * delta;                // -Y ROTATION
+    _rotation.x -= GetMouseDelta().x * (_SENSITIVITY.x) * delta;                    // X ROTATION
+    _rotation.y -= GetMouseDelta().y * (_SENSITIVITY.y) * delta;                    // Y ROTATION
 
     ////// NEUTRALIZE VECTORING //////
     if (strafing_velocity != 0 && forwards_velocity != 0) {
@@ -43,7 +43,7 @@ void Player::update(float delta) {
     ////// COLLISION WITH OBJECTS //////
     for (int i = 0; i < _grid->grid.size(); i++) {
         for (int j = 0; j < _grid->grid[i].size(); j++) {
-            if (_grid->grid[i][j].TYPE == 0) continue;
+            if (_grid->grid[i][j].type == BlockType::EMPTY) continue;
 
             Face face = inside(
                 {j * (float) GetRenderWidth() / (_grid->grid.size()),
@@ -63,7 +63,7 @@ void Player::update(float delta) {
     }
 }
 
-Face Player::inside(Vector2 pos, Vector2 size) { // TODO: to utils
+Face Player::inside(Vector2 pos, Vector2 size) {
     if (pos.x < _position.x + _radius && pos.x + size.x > _position.x - _radius &&
         pos.y < _position.y + _radius && pos.y + size.y > _position.y - _radius
     ) {

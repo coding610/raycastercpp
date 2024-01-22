@@ -30,7 +30,7 @@ void Grid::draw_lines() {
 void Grid::read_file(const char* path) {
     std::fstream f(path, std::ios::in);
     if (!f) {
-        std::cerr << "Error: file \"" << path << "\" not found in function Grid::read_file(const char* path)\n";
+        std::cerr << "Error: file \"" << path << "\" not found in function Grid::read_saved_grid)\n";
         std::exit(1);
     }
 
@@ -38,17 +38,55 @@ void Grid::read_file(const char* path) {
     std::string slice;
     while (std::getline(f, slice)) {
         std::vector<Object> new_slice;
-        std::vector<int> data = {0, 0};
-        int dataindex = 0;
+        BlockType datat;
+        Color datac;
+        int datah;
         for (int j = 0; j < slice.length(); j++) {
             if (slice[j] == ' ') {
-                new_slice.push_back({ .TYPE = data[0], .HEIGHT = data[1] });
-                data = {0, 0}; dataindex = 0;
-            } else if (slice[j] == '_') {
-                dataindex++;
-            } else {
-                data[dataindex] = (10 * data[dataindex]) + (slice[j] - '0');
-            }
+                new_slice.push_back({.type = datat, .color = datac, .height = datah});
+            } else if (slice[j] == 'B') {
+                j += 2;
+                std::string keyword = "";
+                while (std::isalpha(slice[j])) {
+                    keyword.push_back(slice[j]);
+                    j++;
+                }
+                if (keyword == "empty") datat = BlockType::EMPTY;
+                else if (keyword == "block") datat = BlockType::BLOCK;
+
+                j--;
+             } else if (slice[j] == 'C') {
+                 j += 2;
+                 int clr;
+                 for (int i = 0; i < 4; i++) {
+                     clr = 0;
+                     while (std::isdigit(slice[j])) {
+                         clr = 10 * clr + (slice[j] - '0');
+                         j++;
+                     }
+                     switch (i) {
+                         case 0: datac.r = clr;
+                         case 1: datac.g = clr;
+                         case 2: datac.b = clr;
+                         case 3: datac.a = clr;
+                     }
+                     
+                     j++;
+                 }
+
+                 j--;
+             } else if (slice[j] == 'H') {
+                 j += 2;
+                 int r = 0;
+                 while (std::isdigit(slice[j])) {
+                     r = 10 * r + (slice[j] - '0');
+                     j++;
+                 }
+
+                 datah = r;
+                 j--;
+             }
+
         }
 
         grid.push_back(new_slice);
@@ -60,13 +98,13 @@ void Grid::read_file(const char* path) {
 void Grid::draw_objects() {
     for (int i = 0; i < grid.size(); i++) {
         for (int j = 0; j < grid[i].size(); j++) {
-            if (grid[i][j].TYPE == 0) continue;
+            if (grid[i][j].type == BlockType::EMPTY) continue;
             DrawRectangle(
                 j * (float) GetRenderWidth() / (grid.size()),
                 i * (float) GetRenderHeight() / (grid.size()),
                 (float) GetRenderWidth() / (grid.size()),
                 (float) GetRenderHeight() / (grid.size()),
-                _object_colors[grid[i][j].TYPE]
+                grid[i][j].color
             );
         }
     }

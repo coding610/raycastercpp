@@ -2,6 +2,7 @@
 #include <cmath>
 #include "select.hpp"
 #include "defines.hpp"
+#include "grid.hpp"
 
 void Select::multi_select(Vector2 cellsize) {
     if (IsKeyDown(KEY_LEFT_CONTROL)) return;
@@ -28,17 +29,21 @@ void Select::multi_select(Vector2 cellsize) {
     }
 }
 
-void Select::single_select(Vector2 cellsize, Color current_color) {
-    if (IsKeyDown(KEY_LEFT_CONTROL) && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
+void Select::single_select(Vector2 cellsize, Color current_color, BlockType current_type) {
+    BlockType t = current_type;
+
+    if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) t = BlockType::EMPTY;
+    if (IsKeyDown(KEY_LEFT_CONTROL) && (IsMouseButtonDown(MOUSE_LEFT_BUTTON) || IsMouseButtonDown(MOUSE_RIGHT_BUTTON))) {
         Vector2 mousepos = GetMousePosition();
-        if (mousepos.x > 101 && mousepos.y > 101) {
+        if (mousepos.x > 101 && mousepos.y > 101) { _grid->history();
             _finished_selecting = false; _selected_cells = {{0, 0}, {0, 0}};
-            _grid->history();
             Vector2 cell = { 
                 std::floor((mousepos.x - SETTING_SIZE) / cellsize.x),
                 std::floor((mousepos.y - SETTING_SIZE) / cellsize.y)
             };
+            _grid->_grid[cell.y][cell.x].type = t;
             _grid->_grid[cell.y][cell.x].color = current_color;
+            _grid->_grid[cell.y][cell.x].height = 10;
         }
     }
 }

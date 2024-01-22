@@ -4,6 +4,7 @@
 #include <cmath>
 #include <iostream>
 #include <raylib.h>
+#include "grid.hpp"
 #include "player.hpp"
 
 template<typename T>
@@ -30,7 +31,7 @@ inline int square(int num) {
 }
 
 inline float distance(Vector2 p1, Vector2 p2) {
-    const long long MAX = 10000;
+    const long long MAX = 1000;
     if (p1.y > MAX || p1.y < -MAX || p1.x > MAX || p1.y < -MAX
         || p2.y > MAX || p2.y < -MAX || p2.x > MAX || p2.y < -MAX
     ) {
@@ -155,15 +156,15 @@ inline bool collide(Grid* grid, Vector2 pos, Vector2 cellsize, bool aligment, bo
     if (cell.x >= 0 && cell.y >= 0 &&
         cell.x < grid->grid.size() && cell.y < grid->grid[0].size()
     ) {
-        if (grid->grid[cell.x][cell.y].TYPE != 0) {
+        if (grid->grid[cell.x][cell.y].type != BlockType::EMPTY) {
             return true;
         } else if (cell.y - 1 >= 0 && aligment == 0) {
-            if (grid->grid[cell.x][cell.y - 1].TYPE != 0) {
+            if (grid->grid[cell.x][cell.y - 1].type != BlockType::EMPTY) {
                 adjusted_face = true;
                 return true;
             }
         } else if (cell.x - 1 >= 0 && aligment == 1) {
-            if (grid->grid[cell.x - 1][cell.y].TYPE != 0) {
+            if (grid->grid[cell.x - 1][cell.y].type != BlockType::EMPTY) {
                 adjusted_face = true;
                 return true;
             }

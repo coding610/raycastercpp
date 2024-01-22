@@ -19,7 +19,7 @@ private:
 
     ////// CONSTANTS //////
     const float _UNIT_HEIGHT = GetRenderHeight() / 10.0;
-    const float _MAX_DEPTH = 10;
+    const float _MAX_DEPTH = 60;
     float _MAX_RAY_LENGTH;
 
     ////// DEBUGGING //////
@@ -52,7 +52,7 @@ private:
 
     const int _ray_resolution = 1000;
     const float _fov = PI / 4;
-    const Vector2 _cellsize;
+    Vector2 _cellsize;
     bool _debug = false;
     bool* _gamemode;
 

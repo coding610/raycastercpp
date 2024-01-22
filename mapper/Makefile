@@ -13,7 +13,7 @@ OBJ_PATH=build/
 CPP_VERSION=20
 
 # Add -O3 for preformance
-CFLAGS := -O3 -Wall -g -I$(INC_DIR) -std=c++$(CPP_VERSION) -Wno-logical-op-parentheses -Wno-bitwise-op-parentheses
+CFLAGS := -O3 -Wall -g -I$(INC_DIR) -std=c++$(CPP_VERSION) -Wno-reorder-ctor
 LDFLAGS := -lraylib
 
 #_____________________COMPILE______________________

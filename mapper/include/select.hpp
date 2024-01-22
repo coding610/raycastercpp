@@ -18,7 +18,7 @@ public:
     void clear();
     void d_clear();
     void multi_select(Vector2 cellsize);
-    void single_select(Vector2 cellsize, Color current_color);
+    void single_select(Vector2 cellsize, Color current_color, BlockType current_type);
     void scroll_select(Vector2 cellsize);
     void draw(Vector2 cellsize);
 };
