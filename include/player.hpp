@@ -19,6 +19,7 @@ private:
     Grid* _grid;
     Menu* _menu;
 
+    bool* _gamemode;
     Vector2 _position = {50, 50};
     Vector2 _rotation = {PI, (float) GetRenderHeight() / 2};
 
@@ -31,7 +32,7 @@ private:
     const Vector2 _SENSITIVITY = {0.1, 100};
 
 public:
-    inline Player(Grid* grid, Menu* menu) : _grid(grid), _menu(menu) {
+    inline Player(Grid* grid, Menu* menu, bool* gm) : _grid(grid), _menu(menu), _gamemode(gm) {
         _radius = ((float) GetRenderWidth() / _grid->grid.size()) / 4;
         _speed = ((float) GetRenderWidth() * _grid->grid.size()) / 150;
     }

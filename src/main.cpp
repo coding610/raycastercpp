@@ -20,7 +20,7 @@ int main() {
 
     Menu* menu = new Menu();
     Grid* grid = new Grid(); grid->read_file("mapper/output.txt");
-    Player* player = new Player(grid, menu);
+    Player* player = new Player(grid, menu, &gamemode);
     RayManager* rays = new RayManager(player, grid, &gamemode);
 
     while (!WindowShouldClose()) {

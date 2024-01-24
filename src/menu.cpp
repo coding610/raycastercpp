@@ -16,6 +16,8 @@ void Menu::update() {
             SetMousePosition(GetRenderWidth() / 2.0, GetRenderHeight() / 2.0);
         } playing = !playing;
     } else {
-        SetMousePosition(GetRenderWidth() / 2.0, GetRenderHeight() / 2.0);
+        if (playing == true) {
+            SetMousePosition(GetRenderWidth() / 2.0, GetRenderHeight() / 2.0);
+        }
     }
 }

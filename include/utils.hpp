@@ -26,6 +26,13 @@ inline void DEB(Vector2 mes) {
 
 namespace utils {
 
+inline Vector2 cellsize(Grid* grid) {
+    return {
+        (float) GetRenderWidth() / grid->grid.size(),
+        (float) GetRenderWidth() / grid->grid.size()
+    };
+}
+
 inline int square(int num) {
     return num*num;
 }

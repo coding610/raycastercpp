@@ -10,7 +10,16 @@
 #include "utils.hpp"
 
 void Player::update(float delta) {
-    if (!_menu->playing) return;
+    if (!_menu->playing) {
+        if (inside(utils::cellpos(GetMousePosition(), utils::cellsize(_grid)), utils::cellsize(_grid)) != Face::NONE
+            && IsMouseButtonDown(MOUSE_LEFT_BUTTON) && IsKeyDown(KEY_LEFT_CONTROL) && *_gamemode == 0
+        ) {
+            DEB("here");
+            _position = GetMousePosition();
+        }
+
+        return;
+    };
 
     utils::adjust_radians(_rotation.x);
 
