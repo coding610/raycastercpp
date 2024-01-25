@@ -1,7 +1,7 @@
 #include <raylib.h>
 #include <chrono>
 #include "player.hpp"
-#include "raymanager.hpp"
+#include "raystepper.hpp"
 #include "grid.hpp"
 #include "utils.hpp"
 #include "menu.hpp"
@@ -21,7 +21,7 @@ int main() {
     Menu* menu = new Menu();
     Grid* grid = new Grid(); grid->read_file("mapper/output.txt");
     Player* player = new Player(grid, menu, &gamemode);
-    RayManager* rays = new RayManager(player, grid, &gamemode);
+    RayStepper* stepper = new RayStepper(player, grid, &gamemode);
 
     while (!WindowShouldClose()) {
         auto delta1 = std::chrono::steady_clock::now();
@@ -33,12 +33,12 @@ int main() {
         BeginDrawing();
             ClearBackground(Color(7, 7, 10));
 
-            rays->update();
+            stepper->update();
             if (gamemode == 0) {
                 grid->draw_objects();
                 grid->draw_lines();
                 player->draw();
-                rays->debug_draw();
+                stepper->debug_draw();
             }
 
             DrawFPS(10, 10);

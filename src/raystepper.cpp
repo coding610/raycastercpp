@@ -2,8 +2,9 @@
 #include <raylib.h>
 #include "player.hpp"
 #include "grid.hpp"
-#include "raymanager.hpp"
+#include "raystepper.hpp"
 #include "utils.hpp"
+#include "ray.hpp"
 
 
 void _Ray::cast(
@@ -65,7 +66,7 @@ void _Ray::cast(
     _length = utils::distance(originpos, _end_position) * std::cos(delta_radians);
 }
 
-void RayManager::update() {
+void RayStepper::update() {
     if (IsKeyPressed(KEY_BACKSPACE)) _debug = !_debug;
    _cellsize = {
        (float) GetRenderWidth() / _grid->grid.size(),
@@ -84,14 +85,14 @@ void RayManager::update() {
     }
 }
 
-void RayManager::debug_draw() {
+void RayStepper::debug_draw() {
     if (*_gamemode == 1 || !_debug) return;
     for (auto& ray : _rays) {
         DrawLineV(_player->get_position(), ray->get_position(), Color(200, 200, 50, 100));
     }
 }
 
-RayManager::RayManager(Player* pl, Grid* grd, bool* gm)
+RayStepper::RayStepper(Player* pl, Grid* grd, bool* gm)
            : _player(pl), _grid(grd),
            _cellsize({ (float) GetRenderWidth() / grd->grid.size(), (float) GetRenderHeight() / grd->grid[0].size() }),
            _gamemode(gm)

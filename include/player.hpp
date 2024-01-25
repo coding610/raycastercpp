@@ -20,7 +20,7 @@ private:
     Menu* _menu;
 
     bool* _gamemode;
-    Vector2 _position = {50, 50};
+    Vector2 _position = {0, 0};
     Vector2 _rotation = {PI, (float) GetRenderHeight() / 2};
 
     // Constants
@@ -39,7 +39,7 @@ public:
 
     void update(float delta);
     void draw();
-    Face inside(Vector2 pos, Vector2 size);
+    std::tuple<bool, Face, Vector2> inside(Vector2 pos, Vector2 size) const;
 
     inline Vector2 get_position() {
         return _position;
